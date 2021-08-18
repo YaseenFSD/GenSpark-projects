@@ -5,7 +5,6 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-	// write your code here
         Scanner sc = new Scanner(System.in);
         System.out.println("You are in a land full of dragons. In front of you,");
         System.out.println("you see two caves. In one cave, the dragon is friendly");

@@ -20,13 +20,42 @@ public class Main {
     private int stage = 0;
 
     public static void main(String[] args) {
-//        Scanner sc = new Scanner(System.in);
-        String randWord = getRandomWord();
-        char[] guessedChars = getFillerArray(randWord.length());
+        Scanner sc = new Scanner(System.in);
+        String answer = getRandomWord();
+        char[] guessedChars = getFillerArray(answer.length());
+//        System.out.println(answer);
+        char input = sc.next().charAt(0);
+
+        if (hasLetter(input, answer)){
+            updateAnswer(guessedChars, input, answer);
+        } else {
+//            updateMistakes()
+        }
+
         printLetters(guessedChars);
 
 
     }
+ static void updateAnswer (char[] guessedChars, char correctChar, String answer){
+     for (int i = 0; i < answer.length(); i++) {
+         char currentLetter = answer.charAt(i);
+         if (correctChar == currentLetter){
+             guessedChars[i] = currentLetter;
+         }
+     }
+ }
+    static boolean hasLetter(char letter, String answer) {
+        boolean hasLetter = answer.contains(Character.toString(letter));
+        if (hasLetter){
+            return true;
+        }
+        return false;
+    }
+
+//    static void updateChars(char[] guessedChars){
+////        test[0] = 'a';
+//        ;
+//    }
 
     static String getRandomWord() {
         int randInt = new Random().nextInt(words.length);
@@ -39,8 +68,8 @@ public class Main {
         return fillers;
     }
 
-    static void printLetters(char[] letters){
-        for (char letter: letters) {
+    static void printLetters(char[] letters) {
+        for (char letter : letters) {
             System.out.print(letter);
         }
         System.out.println("");

@@ -1,7 +1,8 @@
 package com.company;
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.Random;
+import java.util.Arrays;
+import java.util.Scanner;
 
 /* ascii art credit: https://ascii.co.uk/art/hangman
       _______
@@ -16,15 +17,33 @@ import java.util.Random;
 
 public class Main {
     private static String[] words = {"banana", "apple", "monkey", "orange", "cat", "dog", "one", "monster"};
+    private int stage = 0;
 
     public static void main(String[] args) {
-        System.out.println(getRandomWord());
+//        Scanner sc = new Scanner(System.in);
+        String randWord = getRandomWord();
+        char[] guessedChars = getFillerArray(randWord.length());
+        printLetters(guessedChars);
+
 
     }
 
     static String getRandomWord() {
         int randInt = new Random().nextInt(words.length);
         return words[randInt];
+    }
+
+    static char[] getFillerArray(int length) {
+        char[] fillers = new char[length];
+        Arrays.fill(fillers, '_');
+        return fillers;
+    }
+
+    static void printLetters(char[] letters){
+        for (char letter: letters) {
+            System.out.print(letter);
+        }
+        System.out.println("");
     }
 
     static void printHangman(int stage) {

@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -17,42 +18,81 @@ import java.util.Scanner;
 
 public class Main {
     private static String[] words = {"banana", "apple", "monkey", "orange", "cat", "dog", "one", "monster"};
-    private int stage = 0;
+
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         String answer = getRandomWord();
-        char[] guessedChars = getFillerArray(answer.length());
-//        System.out.println(answer);
-        char input = sc.next().charAt(0);
+        int stage = 0;
+        char[] currentGuess = getFillerArray(answer.length());
+        ArrayList<Character> historyLetters = new ArrayList<>();
+        boolean gameDone = false;
+        boolean roundDone = false;
 
-        if (hasLetter(input, answer)){
-            updateAnswer(guessedChars, input, answer);
-        } else {
-//            updateMistakes()
+        while (!gameDone) {
+            printHangman(stage);
+            printLetters(currentGuess, historyLetters);
+            char input = sc.next().charAt(0);
+
+            if (hasLetter(input, answer)) {
+                updateGuess(currentGuess, input, answer);
+            } else {
+                stage++;
+                updateMistakes(historyLetters, input);
+            }
+            char[] answerCharArray = answer.toCharArray();
+            boolean wonGame = Arrays.equals(answerCharArray, currentGuess);
+            if (wonGame){
+                System.out.println("Congratulations, you won!");
+                roundDone = true;
+            }
+
+
+            if (stage > 4 || roundDone) {
+                if (!wonGame){
+                    printHangman(stage);
+                    System.out.println("Oh no hangman is gone for good. 😢");
+                }
+                if (wantsRestart(sc)) {
+                    gameDone = false;
+                    roundDone = false;
+                    answer = getRandomWord();
+                    stage = 0;
+                    currentGuess = getFillerArray(answer.length());
+                    historyLetters.clear();
+                }else {
+//
+                    gameDone = true;
+                }
+            }
+
         }
-
-        printLetters(guessedChars);
 
 
     }
- static void updateAnswer (char[] guessedChars, char correctChar, String answer){
-     for (int i = 0; i < answer.length(); i++) {
-         char currentLetter = answer.charAt(i);
-         if (correctChar == currentLetter){
-             guessedChars[i] = currentLetter;
-         }
-     }
- }
+
+    static void updateMistakes(ArrayList letters, char input) {
+        letters.add(input);
+    }
+
+    static void updateGuess(char[] currentGuess, char correctChar, String answer) {
+        for (int i = 0; i < answer.length(); i++) {
+            char currentLetter = answer.charAt(i);
+            if (correctChar == currentLetter) {
+                currentGuess[i] = currentLetter;
+            }
+        }
+    }
+
     static boolean hasLetter(char letter, String answer) {
         boolean hasLetter = answer.contains(Character.toString(letter));
-        if (hasLetter){
+        if (hasLetter) {
             return true;
         }
         return false;
     }
 
-//    static void updateChars(char[] guessedChars){
+//    static void updateChars(char[] currentGuess){
 ////        test[0] = 'a';
 //        ;
 //    }
@@ -68,11 +108,29 @@ public class Main {
         return fillers;
     }
 
-    static void printLetters(char[] letters) {
-        for (char letter : letters) {
+    static void printLetters(char[] guessedLetters, ArrayList historyLetters) {
+        System.out.println("Guess a Letter");
+        for (char letter : guessedLetters) {
             System.out.print(letter);
         }
         System.out.println("");
+
+        if (!historyLetters.isEmpty()) System.out.println("Missed Letters");
+        historyLetters.forEach(letter -> {
+                    System.out.print(letter + " ");
+                }
+        );
+        System.out.println("");
+
+    }
+
+    static boolean wantsRestart(Scanner sc) {
+        System.out.print("Do you want to play again? (y or n)");
+        char input = sc.next().charAt(0);
+        if (input == 'y') {
+            return true;
+        }
+        return false;
     }
 
     static void printHangman(int stage) {
@@ -114,7 +172,7 @@ public class Main {
 
                 break;
             case 3:
-                System.out.println("     |/      |\n"
+                System.out.print("     |/      |\n"
                         + "     |      (_)\n"
                         + "     |      \\|/\n"
                         + "     |       \n"

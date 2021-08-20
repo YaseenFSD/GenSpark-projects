@@ -1,5 +1,6 @@
 package com.company;
 
+import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Arrays;
@@ -37,8 +38,9 @@ public class Main {
             if (hasLetter(input, answer)) {
                 updateGuess(currentGuess, input, answer);
             } else {
-                stage++;
-                updateMistakes(historyLetters, input);
+                if (checkLetterMistake(historyLetters, input)){
+                    stage++;
+                };
             }
             char[] answerCharArray = answer.toCharArray();
             boolean wonGame = Arrays.equals(answerCharArray, currentGuess);
@@ -71,8 +73,14 @@ public class Main {
 
     }
 
-    static void updateMistakes(ArrayList letters, char input) {
+    static boolean checkLetterMistake(ArrayList letters, char input) {
+        if (letters.contains(input)) {
+            System.out.printf("You have already tried ' %c '\n", input);
+            return false;
+        };
+
         letters.add(input);
+        return true;
     }
 
     static void updateGuess(char[] currentGuess, char correctChar, String answer) {

@@ -24,9 +24,7 @@ public class Hangman {
             if (hasLetter(input)) {
                 updateGuess(input);
             } else {
-                if (checkLetterMistake(input)) {
-                    stage++;
-                }
+                checkLetterMistake(input);
             }
 
 //            char[] answerCharArray = answer.toCharArray();
@@ -71,20 +69,22 @@ public class Hangman {
         return false;
     }
 
-    boolean checkLetterMistake(char input) {
+    void checkLetterMistake(char input) {
         if (historyLetters.contains(input)) {
             System.out.printf("You have already tried ' %c '\n", input);
-            return false;
+        } else {
+            stage++;
+            historyLetters.add(input);
         }
         ;
-
-        historyLetters.add(input);
-        return true;
     }
 
     void updateGuess(char correctChar) {
         for (int i = 0; i < answer.length(); i++) {
             char currentLetter = answer.charAt(i);
+            if (currentGuess.get(i) == currentLetter) {
+                System.out.println("");
+            }
             if (correctChar == currentLetter) {
                 currentGuess.set(i, currentLetter);
             }

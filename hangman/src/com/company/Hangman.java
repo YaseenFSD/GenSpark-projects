@@ -1,7 +1,9 @@
 package com.company;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Random;
+
 
 public class Hangman {
     private static final String[] words = {"banana", "apple", "monkey", "orange", "cat", "dog", "one", "monster"};
@@ -15,43 +17,46 @@ public class Hangman {
 
     public void start(Scanner sc) {
         answer = getRandomWord();
-//        char[] currentGuess = initializeArray();
         initializeCurrentGuess();
         while (!gameDone) {
             printHangman();
             printLetters();
             char input = sc.next().charAt(0);
-            if (hasLetter(input)) {
-                updateGuess(input);
-            } else {
-                checkLetterMistake(input);
-            }
+            checkLetter(input);
 
-//            char[] answerCharArray = answer.toCharArray();
+            checkEndGame(sc);
 
-//            boolean wonGame = Arrays.equals(answerCharArray, currentGuess);
-            String guessStringRep = currentGuess.stream().map(x -> x.toString()).reduce("", (acc, val) -> acc + val);
-            boolean wonGame = guessStringRep.equals(answer);
-            if (wonGame) {
-                System.out.println("Congratulations, you won!");
-                roundDone = true;
-            }
-
-            if (stage > 4 || roundDone) {
-                if (!wonGame) {
-                    printHangman();
-                    System.out.println("Oh no hangman is gone for good. 😢");
-                }
-                if (wantsRestart(sc)) {
-                    restartGame();
-                    initializeCurrentGuess();
-                } else {
-                    gameDone = true;
-                }
-            }
         }
     }
 
+    void checkLetter(char input) {
+        if (hasLetter(input)) {
+            updateGuess(input);
+        } else {
+            checkLetterMistake(input);
+        }
+}
+    void checkEndGame(Scanner sc){
+        String guessStringRep = currentGuess.stream().map(x -> x.toString()).reduce("", (acc, val) -> acc + val);
+        boolean wonGame = guessStringRep.equals(answer);
+        if (wonGame) {
+            System.out.println("Congratulations, you won!");
+            roundDone = true;
+        }
+
+        if (stage > 4 || roundDone) {
+            if (!wonGame) {
+                printHangman();
+                System.out.println("Oh no hangman is gone for good. 😢");
+            }
+            if (wantsRestart(sc)) {
+                restartGame();
+                initializeCurrentGuess();
+            } else {
+                gameDone = true;
+            }
+        }
+    }
     void restartGame() {
         gameDone = false;
         roundDone = false;
@@ -101,9 +106,7 @@ public class Hangman {
 
     void printLetters() {
         System.out.println("Guess a Letter");
-//        for (char letter : guessedLetters) {
-//            System.out.print(letter);
-//        }
+
         currentGuess.forEach(letter -> System.out.print(letter));
         System.out.println("");
 

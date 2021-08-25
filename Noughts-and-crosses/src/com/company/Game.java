@@ -11,7 +11,8 @@ public class Game {
     public void start(){
         Scanner sc = new Scanner(System.in);
         userPicksSymbol(sc);
-
+        initializeBoard();
+        printBoard();
     }
 
     void userPicksSymbol(Scanner sc) {
@@ -30,6 +31,12 @@ public class Game {
             user = 'X';
             bot = 'O';
             System.out.println("Invalid input. You are assigned to X");
+        }
+    }
+
+    void initializeBoard(){
+        for (int i = 0; i < 9; i++) {
+            board.add(i + 1);
         }
     }
 
@@ -75,7 +82,19 @@ public class Game {
 
     void printBoard(){
 //        Print current board
-//        System.out.print();
+        for (int i = 0; i < board.size(); i++) {
+            System.out.print(board.get(i));
+            if (i == board.size() - 1 ) {
+//                end of board
+                System.out.println("");
+                continue;
+            };
+            if((i + 1) % 3 == 0){
+                System.out.println("\n__________");
+            } else {
+                System.out.print(" | ");
+            }
+        }
     }
 
 

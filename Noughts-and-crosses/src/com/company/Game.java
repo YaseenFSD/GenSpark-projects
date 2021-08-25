@@ -16,8 +16,20 @@ public class Game {
         Scanner sc = new Scanner(System.in);
         userPicksSymbol(sc);
         initializeBoard();
-        printBoard();
-        
+        initializeCurrentPlayer();
+        int testI = 0;
+        while (testI < 9) {
+//            while (!isEndGame()){
+            if (currentPlayer == user) {
+                printBoard();
+                userPlay(sc);
+            } else {
+                botPlay();
+            }
+            swapTurn();
+//            printTurn
+            testI++;
+        }
     }
 
     void userPicksSymbol(Scanner sc) {
@@ -50,8 +62,10 @@ public class Game {
         int rand = new Random().nextInt(2) + 1;
         if (rand == 1) {
             currentPlayer = user;
+            System.out.printf("You are %c, you are first\n", user);
         } else {
             currentPlayer = bot;
+            System.out.printf("You are %c, bot goes first\n", user);
         }
     }
 
@@ -63,28 +77,49 @@ public class Game {
         }
     }
 
-    boolean isValidSpot(Object spot) {
-        if (spot.getClass().getSimpleName().equals("Integer")) {
-            int intRep = Integer.parseInt(spot.toString());
-            if (intRep < 10 && intRep > 0){
+    boolean isValidSpot(int spot) {
+        if (spot < 10 && spot > 0) {
+//            prevents index out of bounds error
+            if (board.get(spot - 1).getClass().getSimpleName().equals("Integer")) {
+//              check if spot is empty (by having a number in the spot)
                 return true;
             }
+        }
+        if (currentPlayer == user) {
+            System.out.println("Invalid spot/input, please try again");
         }
         return false;
     }
 
     void userPlay(Scanner sc) {
 //        User inputs a position and updates board
+        System.out.printf("Your turn (%c), pick a spot\n", user);
+        int spot;
 
+
+        do {
+            if (sc.hasNextInt()) {
+                spot = sc.nextInt();
+            } else {
+                System.out.println("Not a valid input");
+                sc.next();
+                spot = 0;
+            }
+        } while (!isValidSpot(spot));
+
+        
+        int positionIndex = spot - 1;
+        board.set(positionIndex, user);
     }
 
     void botPlay() {
 //        Bot Plays and updates board
-//        for (int i = 0; i < board.size(); i++) {
-//            if (if  board.get(i)) {
-//
-//            }
-//        }
+        for (int i = 0; i < board.size(); i++) {
+            if (isValidSpot(i + 1)) {
+                board.set(i, bot);
+                break;
+            }
+        }
     }
 
     int countAvailableSpots() {
@@ -92,8 +127,8 @@ public class Game {
         return 0;
     }
 
-    ArrayList<Integer> getAvailableSpots() {
-//        return an ArrayList of the numbers of currently available spots
+    ArrayList<Integer> getAvailableIndexes() {
+//        return an ArrayList of the indexes of currently available spots
 
         return new ArrayList<>();
     }

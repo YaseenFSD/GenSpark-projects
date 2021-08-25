@@ -1,6 +1,5 @@
 package com.company;
 
-import com.sun.jdi.IntegerType;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -11,15 +10,16 @@ public class Game {
     char user;
     char bot;
     char currentPlayer;
-
+//    boolean userContinue = true;
     public void start() {
         Scanner sc = new Scanner(System.in);
         userPicksSymbol(sc);
         initializeBoard();
         initializeCurrentPlayer();
-        int testI = 0;
-        while (testI < 9) {
-//            while (!isEndGame()){
+//        while (userContinue){
+//
+//        }
+        while (!isEndGame()) {
             if (currentPlayer == user) {
                 printBoard();
                 userPlay(sc);
@@ -28,9 +28,11 @@ public class Game {
             }
             swapTurn();
 //            printTurn
-            testI++;
         }
+        printBoard();
+        System.out.println("End");
     }
+
 
     void userPicksSymbol(Scanner sc) {
         System.out.println("Choose your symbol (X or O)");
@@ -107,7 +109,7 @@ public class Game {
             }
         } while (!isValidSpot(spot));
 
-        
+
         int positionIndex = spot - 1;
         board.set(positionIndex, user);
     }
@@ -124,7 +126,8 @@ public class Game {
 
     int countAvailableSpots() {
 //        return a count of current available spots
-        return 0;
+        int count = (int) board.stream().filter(spot -> spot.getClass().getSimpleName().equals("Integer")).count();
+        return count;
     }
 
     ArrayList<Integer> getAvailableIndexes() {
@@ -135,6 +138,39 @@ public class Game {
 
     boolean isEndGame() {
 //        if any 3 in a row or no more spaces are left return true
+/*
+        0 | 1 | 2
+        __________
+        3 | 4 | 5
+        __________
+        6 | 7 | 8
+*/
+
+        if (countAvailableSpots() == 0) {
+            return true;
+        }
+//        horizontal checks
+        if ((board.get(0) == board.get(1) && board.get(1) == board.get(2)) ||
+                (board.get(3) == board.get(4) && board.get(4) == board.get(5)) ||
+                (board.get(6) == board.get(7) && board.get(7) == board.get(8))
+        ) {
+            return true;
+        }
+
+        // vertical checks
+        if ((board.get(0) == board.get(3) && board.get(3) == board.get(6)) ||
+                (board.get(1) == board.get(4) && board.get(4) == board.get(7)) ||
+                (board.get(2) == board.get(5) && board.get(5) == board.get(8))
+        ) {
+            return true;
+        }
+
+        // diagonal checks
+        if ((board.get(0) == board.get(4) && board.get(4) == board.get(8)) ||
+                (board.get(2) == board.get(4) && board.get(4) == board.get(6))
+        ) {
+            return true;
+        }
 
         return false;
     }

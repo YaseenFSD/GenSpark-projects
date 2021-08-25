@@ -26,9 +26,9 @@ public class Game {
                     botPlay();
                 }
                 swapTurn();
-//            printTurn
             }
             printBoard();
+            displayResult();
             askReplay(sc);
         }
     }
@@ -176,18 +176,75 @@ public class Game {
         return false;
     }
 
-    boolean checkTie() {
-//        If getAvailableSpots.isEmpty and both (checkBotWin and checkUserWin) are false, then return true
-        return false;
+    void displayResult(){
+        if (checkBotWin()){
+//            you lost
+            System.out.println("Better luck next time!");
+        } else if (checkUserWin()){
+//            You won
+            System.out.println("Congrats you won!");
+
+        } else {
+//            Tie
+            System.out.println("The game has ended in a draw.");
+
+        }
     }
+
 
     boolean checkBotWin() {
 //        If bot gets 3 in a row return true
+        //        horizontal checks
+        if ((board.get(0) == board.get(1) && board.get(1) == board.get(2) && board.get(0).equals(bot)) ||
+                (board.get(3) == board.get(4) && board.get(4) == board.get(5) && board.get(3).equals(bot)) ||
+                (board.get(6) == board.get(7) && board.get(7) == board.get(8) && board.get(6).equals(bot))
+        ) {
+            return true;
+        }
+
+        // vertical checks
+        if ((board.get(0) == board.get(3) && board.get(3) == board.get(6) && board.get(0).equals(bot)) ||
+                (board.get(1) == board.get(4) && board.get(4) == board.get(7) && board.get(1).equals(bot)) ||
+                (board.get(2) == board.get(5) && board.get(5) == board.get(8) && board.get(2).equals(bot))
+        ) {
+            return true;
+        }
+
+        // diagonal checks
+        if ((board.get(0) == board.get(4) && board.get(4) == board.get(8) && board.get(0).equals(bot)) ||
+                (board.get(2) == board.get(4) && board.get(4) == board.get(6) && board.get(2).equals(bot))
+        ) {
+            return true;
+        }
+
         return false;
     }
 
     boolean checkUserWin() {
 //        If user gets 3 in a row return true
+        //        horizontal checks
+        if ((board.get(0) == board.get(1) && board.get(1) == board.get(2) && board.get(0).equals(user)) ||
+                (board.get(3) == board.get(4) && board.get(4) == board.get(5) && board.get(3).equals(user)) ||
+                (board.get(6) == board.get(7) && board.get(7) == board.get(8) && board.get(6).equals(user))
+        ) {
+            return true;
+        }
+
+        // vertical checks
+        if ((board.get(0) == board.get(3) && board.get(3) == board.get(6) && board.get(0).equals(user)) ||
+                (board.get(1) == board.get(4) && board.get(4) == board.get(7) && board.get(1).equals(user)) ||
+                (board.get(2) == board.get(5) && board.get(5) == board.get(8) && board.get(2).equals(user))
+        ) {
+            return true;
+        }
+
+        // diagonal checks
+        if ((board.get(0) == board.get(4) && board.get(4) == board.get(8) && board.get(0).equals(user)) ||
+                (board.get(2) == board.get(4) && board.get(4) == board.get(6) && board.get(2).equals(user))
+        ) {
+            return true;
+        }
+
         return false;
     }
     void resetGame() {
@@ -199,7 +256,7 @@ public class Game {
         System.out.println("Would you like to play again? (y or n)");
         char input = Character.toLowerCase(sc.next().charAt(0));
         if (input == 'n'){
-            userContinue = true;
+            userContinue = false;
         } else {
             resetGame();
         }

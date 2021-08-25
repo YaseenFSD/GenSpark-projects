@@ -10,27 +10,27 @@ public class Game {
     char user;
     char bot;
     char currentPlayer;
-//    boolean userContinue = true;
+    boolean userContinue = true;
     public void start() {
         Scanner sc = new Scanner(System.in);
         userPicksSymbol(sc);
         initializeBoard();
         initializeCurrentPlayer();
-//        while (userContinue){
-//
-//        }
-        while (!isEndGame()) {
-            if (currentPlayer == user) {
-                printBoard();
-                userPlay(sc);
-            } else {
-                botPlay();
-            }
-            swapTurn();
+        while (userContinue){
+
+            while (!isEndGame()) {
+                if (currentPlayer == user) {
+                    printBoard();
+                    userPlay(sc);
+                } else {
+                    botPlay();
+                }
+                swapTurn();
 //            printTurn
+            }
+            printBoard();
+            askReplay(sc);
         }
-        printBoard();
-        System.out.println("End");
     }
 
 
@@ -54,6 +54,7 @@ public class Game {
     }
 
     void initializeBoard() {
+        board.clear();
         for (int i = 0; i < 9; i++) {
             board.add(i + 1);
         }
@@ -188,6 +189,20 @@ public class Game {
     boolean checkUserWin() {
 //        If user gets 3 in a row return true
         return false;
+    }
+    void resetGame() {
+        initializeBoard();
+        initializeCurrentPlayer();
+    }
+
+    void askReplay(Scanner sc) {
+        System.out.println("Would you like to play again? (y or n)");
+        char input = Character.toLowerCase(sc.next().charAt(0));
+        if (input == 'n'){
+            userContinue = true;
+        } else {
+            resetGame();
+        }
     }
 
     void printBoard() {

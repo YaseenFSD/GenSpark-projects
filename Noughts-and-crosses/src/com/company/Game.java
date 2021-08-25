@@ -1,6 +1,7 @@
 package com.company;
 
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -128,9 +129,10 @@ public class Game {
         }
     }
 
-//    void botPlayRandomSpot() {
-//
-//}
+    void botPlayRandomSpot() {
+        ArrayList<Integer> spots = new ArrayList<>();
+        int rand = new Random().nextInt(spots.size());
+}
     int countAvailableSpots() {
 //        return a count of current available spots
         int count = (int) getAvailableSpotsStream().count();
@@ -141,7 +143,7 @@ public class Game {
 //        return an ArrayList of the indexes of currently available spots
 
         ArrayList<Integer> spots = new ArrayList<>();
-        getAvailableSpotsStream().forEach(spot -> spots.add((int)spot));
+        getAvailableSpotsStream().forEach(spot -> spots.add((int)spot - 1));
         return spots;
     }
 

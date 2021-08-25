@@ -9,7 +9,28 @@ public class Game {
     char bot;
     char currentPlayer;
     public void start(){
+        Scanner sc = new Scanner(System.in);
+        userPicksSymbol(sc);
 
+    }
+
+    void userPicksSymbol(Scanner sc) {
+        System.out.println("Choose your symbol (X or O)");
+        char input = sc.next().charAt(0);
+        input = Character.toUpperCase(input);
+        if (input == 'X'){
+            user = 'X';
+            bot = 'O';
+            System.out.println("You have been assigned to X");
+        } else if (input == 'O') {
+            user = 'O';
+            bot = 'X';
+            System.out.println("You have been assigned to O");
+        } else {
+            user = 'X';
+            bot = 'O';
+            System.out.println("Invalid input. You are assigned to X");
+        }
     }
 
     void initializeCurrentPlayer(){

@@ -2,8 +2,11 @@ package com.company;
 
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Game {
     ArrayList<Object> board = new ArrayList<>();
@@ -125,16 +128,25 @@ public class Game {
         }
     }
 
+//    void botPlayRandomSpot() {
+//
+//}
     int countAvailableSpots() {
 //        return a count of current available spots
-        int count = (int) board.stream().filter(spot -> spot.getClass().getSimpleName().equals("Integer")).count();
+        int count = (int) getAvailableSpotsStream().count();
         return count;
     }
 
     ArrayList<Integer> getAvailableIndexes() {
 //        return an ArrayList of the indexes of currently available spots
 
-        return new ArrayList<>();
+        ArrayList<Integer> spots = new ArrayList<>();
+        getAvailableSpotsStream().forEach(spot -> spots.add((int)spot));
+        return spots;
+    }
+
+    Stream getAvailableSpotsStream() {
+        return board.stream().filter(spot -> spot.getClass().getSimpleName().equals("Integer"));
     }
 
     boolean isEndGame() {

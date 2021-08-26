@@ -13,6 +13,9 @@ public class Game {
     char bot;
     char currentPlayer;
     boolean userContinue = true;
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+
 
     public void start() {
         Scanner sc = new Scanner(System.in);
@@ -308,7 +311,11 @@ public class Game {
     void printBoard() {
 //        Print current board
         for (int i = 0; i < board.size(); i++) {
-            System.out.print(board.get(i));
+            if (board.get(i) instanceof Character){
+                System.out.print(ANSI_RESET + board.get(i) + ANSI_CYAN);
+            }else {
+                System.out.print(ANSI_CYAN + board.get(i));
+            }
             if (i == board.size() - 1) {
 //                end of board
                 System.out.println("");

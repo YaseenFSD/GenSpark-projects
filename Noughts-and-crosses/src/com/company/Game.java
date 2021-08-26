@@ -2,6 +2,7 @@ package com.company;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -35,12 +36,58 @@ public class Game {
         }
     }
 
-//    int miniMax(char currentPlayer, ArrayList<Object> currentBoard) {
-//        char maxPlayer = bot;
-//        char otherPlayer = currentPlayer == bot ? user : bot;
-////        Game game = new Game();
-////        game.board = board;
-//    }
+    HashMap<String, Object> miniMax(char currentPlayer, ArrayList<Object> simulatedBoard) {
+//        Resource: https://www.youtube.com/watch?v=fT3YWCKvuQE&t=1s
+        char maxPlayer = bot;
+        char otherPlayer = currentPlayer == bot ? user : bot;
+
+        if (checkPlayerWin(otherPlayer)) {
+            int score = otherPlayer == maxPlayer ? 1 * (countAvailableSpots(simulatedBoard) + 1) : -1 * (countAvailableSpots(simulatedBoard) + 1);
+            return new HashMap<>(){{
+                put("position", null);
+                put("score", score);
+            }};
+
+        } else if (countAvailableSpots(simulatedBoard) == 0) {
+            return new HashMap<>(){{
+                put("position", null);
+                put("score", 0);
+            }};
+        }
+
+        HashMap<String, Object> bestMove;
+        if (currentPlayer == maxPlayer){
+            bestMove = new HashMap<>(){{
+                put("position", null);
+                put("score", Integer.MIN_VALUE);
+            }};
+        } else {
+            bestMove = new HashMap<>(){{
+                put("position", null);
+                put("score", Integer.MAX_VALUE);
+            }};
+        }
+
+        for (int possibleMove: getAvailableIndexes(simulatedBoard)) {
+            simulatedBoard.set(possibleMove, currentPlayer);
+            HashMap<String, Object> simScore = miniMax(otherPlayer, simulatedBoard);
+
+            simulatedBoard.set(possibleMove, possibleMove + 1);
+            simScore.replace("position", possibleMove);
+
+            if (currentPlayer == maxPlayer){
+                if ((int)simScore.get("score") > (int)bestMove.get("score")) {
+                    bestMove = simScore;
+                }
+            } else {
+                if ((int)simScore.get("score") < (int)bestMove.get("score")) {
+                    bestMove = simScore;
+                }
+            }
+
+        }
+        return bestMove;
+    }
 
     void userPicksSymbol(Scanner sc) {
         System.out.println("Choose your symbol (X or O)");
@@ -125,36 +172,36 @@ public class Game {
 
     void botPlay() {
 //        Bot Plays and updates board
-//        for (int i = 0; i < board.size(); i++) {
-//            if (isValidSpot(i + 1)) {
-//                board.set(i, bot);
-//                break;
-//            }
-//        }
-        botPlayRandomSpot();
+        if(countAvailableSpots(board) == 9){
+            botPlayRandomSpot();
+        } else {
+            board.set((int)miniMax(bot, board).get("position"), bot);
+        }
     }
 
     void botPlayRandomSpot() {
-        ArrayList<Integer> spots = getAvailableIndexes();
+        ArrayList<Integer> spots = getAvailableIndexes(board);
         int rand = new Random().nextInt(spots.size());
         board.set(spots.get(rand), bot);
     }
 
-    int countAvailableSpots() {
+    int countAvailableSpots(ArrayList<Object> board) {
 //        return a count of current available spots
-        int count = (int) getAvailableSpotsStream().count();
+        int count = (int) getAvailableSpotsStream(board).count();
         return count;
     }
 
-    ArrayList<Integer> getAvailableIndexes() {
+    ArrayList<Integer> getAvailableIndexes(ArrayList<Object> board) {
 //        return an ArrayList of the indexes of currently available spots
 
         ArrayList<Integer> spots = new ArrayList<>();
-        getAvailableSpotsStream().forEach(spot -> spots.add((int) spot - 1));
+
+
+        getAvailableSpotsStream(board).forEach(spot -> spots.add((int) spot - 1));
         return spots;
     }
 
-    Stream getAvailableSpotsStream() {
+    Stream getAvailableSpotsStream(ArrayList<Object> board) {
         return board.stream().filter(spot -> spot.getClass().getSimpleName().equals("Integer"));
     }
 
@@ -168,7 +215,7 @@ public class Game {
         6 | 7 | 8
 */
 
-        if (countAvailableSpots() == 0) {
+        if (countAvailableSpots(board) == 0) {
             return true;
         }
 //        horizontal checks
@@ -241,7 +288,7 @@ public class Game {
 
         return false;
     }
-    
+
 
     void resetGame() {
         initializeBoard();

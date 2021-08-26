@@ -12,12 +12,13 @@ public class Game {
     char bot;
     char currentPlayer;
     boolean userContinue = true;
+
     public void start() {
         Scanner sc = new Scanner(System.in);
         userPicksSymbol(sc);
         initializeBoard();
         initializeCurrentPlayer();
-        while (userContinue){
+        while (userContinue) {
 
             while (!isEndGame()) {
                 if (currentPlayer == user) {
@@ -34,6 +35,12 @@ public class Game {
         }
     }
 
+//    int miniMax(char currentPlayer, ArrayList<Object> currentBoard) {
+//        char maxPlayer = bot;
+//        char otherPlayer = currentPlayer == bot ? user : bot;
+////        Game game = new Game();
+////        game.board = board;
+//    }
 
     void userPicksSymbol(Scanner sc) {
         System.out.println("Choose your symbol (X or O)");
@@ -131,7 +138,8 @@ public class Game {
         ArrayList<Integer> spots = getAvailableIndexes();
         int rand = new Random().nextInt(spots.size());
         board.set(spots.get(rand), bot);
-}
+    }
+
     int countAvailableSpots() {
 //        return a count of current available spots
         int count = (int) getAvailableSpotsStream().count();
@@ -142,7 +150,7 @@ public class Game {
 //        return an ArrayList of the indexes of currently available spots
 
         ArrayList<Integer> spots = new ArrayList<>();
-        getAvailableSpotsStream().forEach(spot -> spots.add((int)spot - 1));
+        getAvailableSpotsStream().forEach(spot -> spots.add((int) spot - 1));
         return spots;
     }
 
@@ -189,11 +197,11 @@ public class Game {
         return false;
     }
 
-    void displayResult(){
-        if (checkBotWin()){
+    void displayResult() {
+        if (checkPlayerWin(bot)) {
 //            you lost
             System.out.println("Better luck next time!");
-        } else if (checkUserWin()){
+        } else if (checkPlayerWin(user)) {
 //            You won
             System.out.println("Congrats you won!");
 
@@ -205,61 +213,36 @@ public class Game {
     }
 
 
-    boolean checkBotWin() {
-//        If bot gets 3 in a row return true
+
+    boolean checkPlayerWin(char player) {
+        //        If player gets 3 in a row return true
         //        horizontal checks
-        if ((board.get(0) == board.get(1) && board.get(1) == board.get(2) && board.get(0).equals(bot)) ||
-                (board.get(3) == board.get(4) && board.get(4) == board.get(5) && board.get(3).equals(bot)) ||
-                (board.get(6) == board.get(7) && board.get(7) == board.get(8) && board.get(6).equals(bot))
+        if ((board.get(0) == board.get(1) && board.get(1) == board.get(2) && board.get(0).equals(player)) ||
+                (board.get(3) == board.get(4) && board.get(4) == board.get(5) && board.get(3).equals(player)) ||
+                (board.get(6) == board.get(7) && board.get(7) == board.get(8) && board.get(6).equals(player))
         ) {
             return true;
         }
 
         // vertical checks
-        if ((board.get(0) == board.get(3) && board.get(3) == board.get(6) && board.get(0).equals(bot)) ||
-                (board.get(1) == board.get(4) && board.get(4) == board.get(7) && board.get(1).equals(bot)) ||
-                (board.get(2) == board.get(5) && board.get(5) == board.get(8) && board.get(2).equals(bot))
+        if ((board.get(0) == board.get(3) && board.get(3) == board.get(6) && board.get(0).equals(player)) ||
+                (board.get(1) == board.get(4) && board.get(4) == board.get(7) && board.get(1).equals(player)) ||
+                (board.get(2) == board.get(5) && board.get(5) == board.get(8) && board.get(2).equals(player))
         ) {
             return true;
         }
 
         // diagonal checks
-        if ((board.get(0) == board.get(4) && board.get(4) == board.get(8) && board.get(0).equals(bot)) ||
-                (board.get(2) == board.get(4) && board.get(4) == board.get(6) && board.get(2).equals(bot))
+        if ((board.get(0) == board.get(4) && board.get(4) == board.get(8) && board.get(0).equals(player)) ||
+                (board.get(2) == board.get(4) && board.get(4) == board.get(6) && board.get(2).equals(player))
         ) {
             return true;
         }
 
         return false;
     }
+    
 
-    boolean checkUserWin() {
-//        If user gets 3 in a row return true
-        //        horizontal checks
-        if ((board.get(0) == board.get(1) && board.get(1) == board.get(2) && board.get(0).equals(user)) ||
-                (board.get(3) == board.get(4) && board.get(4) == board.get(5) && board.get(3).equals(user)) ||
-                (board.get(6) == board.get(7) && board.get(7) == board.get(8) && board.get(6).equals(user))
-        ) {
-            return true;
-        }
-
-        // vertical checks
-        if ((board.get(0) == board.get(3) && board.get(3) == board.get(6) && board.get(0).equals(user)) ||
-                (board.get(1) == board.get(4) && board.get(4) == board.get(7) && board.get(1).equals(user)) ||
-                (board.get(2) == board.get(5) && board.get(5) == board.get(8) && board.get(2).equals(user))
-        ) {
-            return true;
-        }
-
-        // diagonal checks
-        if ((board.get(0) == board.get(4) && board.get(4) == board.get(8) && board.get(0).equals(user)) ||
-                (board.get(2) == board.get(4) && board.get(4) == board.get(6) && board.get(2).equals(user))
-        ) {
-            return true;
-        }
-
-        return false;
-    }
     void resetGame() {
         initializeBoard();
         initializeCurrentPlayer();
@@ -268,7 +251,7 @@ public class Game {
     void askReplay(Scanner sc) {
         System.out.println("Would you like to play again? (y or n)");
         char input = Character.toLowerCase(sc.next().charAt(0));
-        if (input == 'n'){
+        if (input == 'n') {
             userContinue = false;
         } else {
             resetGame();

@@ -1,12 +1,9 @@
 package com.company;
 
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Random;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Game {
@@ -121,17 +118,19 @@ public class Game {
 
     void botPlay() {
 //        Bot Plays and updates board
-        for (int i = 0; i < board.size(); i++) {
-            if (isValidSpot(i + 1)) {
-                board.set(i, bot);
-                break;
-            }
-        }
+//        for (int i = 0; i < board.size(); i++) {
+//            if (isValidSpot(i + 1)) {
+//                board.set(i, bot);
+//                break;
+//            }
+//        }
+        botPlayRandomSpot();
     }
 
     void botPlayRandomSpot() {
-        ArrayList<Integer> spots = new ArrayList<>();
+        ArrayList<Integer> spots = getAvailableIndexes();
         int rand = new Random().nextInt(spots.size());
+        board.set(spots.get(rand), bot);
 }
     int countAvailableSpots() {
 //        return a count of current available spots

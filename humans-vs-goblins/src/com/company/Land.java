@@ -1,14 +1,13 @@
 package com.company;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Land {
     public static Scanner sc = new Scanner(System.in);
     private static ArrayList<Goblin> goblins = new ArrayList();
-//    Anywhere between -10 and 10 is a valid spot for a range of 20
+    //    Anywhere between -10 and 10 is a valid spot for a range of 20
     public static int maxXrange = 20;
     public static int maxYrange = 20;
 
@@ -16,12 +15,31 @@ public class Land {
 //        starts game and doesn't finish until Human is dead
         Human player = new Human();
         spawnWorld(player);
-        while(!player.isDead){
+//        goblins.forEach(x -> System.out.println(String.format("x = %d \n y = %d \n\n", x.coordinates[0], x.coordinates[1])));
+        while (!player.isDead) {
             player.pickWorldAction();
+            if (playerCollidesGoblin(player)) {
+//                System.out.println();
+//                player.isInCombat = true;
+//                while(player.isInCombat){
+//
+//                }
+            }
         }
     }
 
-//    boolean playerCollidesGoblin(Human player){}
+
+
+    boolean playerCollidesGoblin(Human player) {
+        for (Goblin goblin: goblins) {
+            if (Arrays.equals(goblin.coordinates, player.coordinates)) {
+                System.out.println("Oh no you have collided with a goblin!");
+                System.out.println(goblin);
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     void spawnWorld(Human player) {

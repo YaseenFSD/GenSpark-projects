@@ -1,6 +1,5 @@
 package com.company;
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.HashMap;
 
 public class Human extends Animal {

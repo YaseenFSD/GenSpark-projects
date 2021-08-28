@@ -9,14 +9,19 @@ public class Land {
     public static Scanner sc = new Scanner(System.in);
     private static ArrayList<Goblin> goblins = new ArrayList();
 //    Anywhere between -10 and 10 is a valid spot for a range of 20
-    int maxXrange = 20;
-    int maxYrange = 20;
+    public static int maxXrange = 20;
+    public static int maxYrange = 20;
 
     void startGame() {
 //        starts game and doesn't finish until Human is dead
         Human player = new Human();
         spawnWorld(player);
+        while(!player.isDead){
+            player.pickWorldAction();
+        }
     }
+
+//    boolean playerCollidesGoblin(Human player){}
 
 
     void spawnWorld(Human player) {

@@ -1,5 +1,6 @@
 package com.company;
 
+import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.HashMap;
 
 public class Human extends Animal{
@@ -9,6 +10,17 @@ public class Human extends Animal{
         put("armor", 0);
         put("ultimate", 0);
     }};
+
+    Human() {
+        this.name = initializeName();
+    }
+
+    String initializeName(){
+        System.out.println("Hello human, what is your name?");
+        String name = Land.sc.next();
+        return name;
+    }
+
 
     void increaseMaxHealth(int increaseBy) {
 //        increase max health by 'increaseBy'

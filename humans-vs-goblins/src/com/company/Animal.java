@@ -2,7 +2,7 @@ package com.company;
 
 public class Animal {
     boolean isDead = false;
-    int maxHeath = 100;
+    int maxHealth = 100;
     int currentHealth = 100;
     String name;
     int level = 1;
@@ -12,7 +12,7 @@ public class Animal {
     }
 
     void attemptAttack(Animal opponent) {
-//        50% chance of landing an attack. if attack is successful decrease opponent current health by (level * 20)
+//        50% chance of landing an attack. if attack is successful decrease opponent current health by (randomInt 10-20 * level)
     }
 
 }

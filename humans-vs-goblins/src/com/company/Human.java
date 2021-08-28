@@ -3,9 +3,9 @@ package com.company;
 import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.HashMap;
 
-public class Human extends Animal{
+public class Human extends Animal {
     boolean isInCombat = false;
-    HashMap<String, Integer> potions = new HashMap<>(){{
+    HashMap<String, Integer> potions = new HashMap<>() {{
         put("heal", 0);
         put("armor", 0);
         put("ultimate", 0);
@@ -15,7 +15,7 @@ public class Human extends Animal{
         this.name = initializeName();
     }
 
-    String initializeName(){
+    String initializeName() {
         System.out.println("Hello human, what is your name?");
         String name = Land.sc.next();
         return name;
@@ -25,6 +25,7 @@ public class Human extends Animal{
     void increaseMaxHealth(int increaseBy) {
 //        increase max health by 'increaseBy'
     }
+
     void levelUp() {
 //        increase level by 1 which should also increase maxHealth and fill health;
     }
@@ -33,7 +34,7 @@ public class Human extends Animal{
 //        pick an action of flee, attack or heal
     }
 
-    void fleeCombat(){
+    void fleeCombat() {
 //        ends combat
     }
 
@@ -41,21 +42,22 @@ public class Human extends Animal{
 //        moves character by 1 unit towards 'direction'
     }
 
-    void usePotion(){
+    void usePotion() {
 //        asks user which potion to use and uses if available
     }
 
-    void printInventory(){
+    void printInventory() {
 //        prints potions with amount of each potion
     }
 
-    void printStats(){
-//        prints level, health, and maxHealth
+    void printStats() {
+//        prints name, level, health, and maxHealth
     }
 
     @Override
-    public String toString(){
+    public String toString() {
 //        returns string representation of this object
-        return "";
+        return String.format("Name: %s\nLevel: %s\nHealth: %s\nMax Health: %s", this.name, this.level,this.currentHealth, this.maxHealth);
+
     }
 }

@@ -65,12 +65,42 @@ public class Human extends Animal {
 //        the higher the level the less chance of leveling up
     }
 
-    void pickCombatAction(char input) {
+    void pickCombatAction(Goblin goblin) {
 //        pick an action of flee, attack or heal
+        printCombatActions();
+        int input;
+        if (Land.sc.hasNextInt()){
+           input = Land.sc.nextInt();
+        } else {
+            Land.sc.next();
+            System.out.println("Invalid option");
+            return;
+        }
+
+        switch (input){
+            case 1:
+                this.attemptAttack(goblin);
+                break;
+            case 2:
+//                usePotion();
+                break;
+            case 3:
+//                fleeCombat();
+                break;
+            default:
+                System.out.println("Please choose a valid number");
+                break;
+        }
     }
 
-    private void fleeCombat() {
+    void printCombatActions(){
+        System.out.println("1- attack, 2- use potion, 3- flee,");
+
+    }
+
+    void fleeCombat() {
 //        ends combat
+        this.isInCombat = false;
     }
 
 

@@ -1,8 +1,6 @@
 package com.company;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Land {
     public static Scanner sc = new Scanner(System.in);
@@ -15,30 +13,56 @@ public class Land {
 //        starts game and doesn't finish until Human is dead
         Human player = new Human();
         spawnWorld(player);
-//        goblins.forEach(x -> System.out.println(String.format("x = %d \n y = %d \n\n", x.coordinates[0], x.coordinates[1])));
+        goblins.forEach(x -> System.out.println(String.format("x = %d \n y = %d \n\n", x.coordinates[0], x.coordinates[1])));
         while (!player.isDead) {
             player.pickWorldAction();
-            if (playerCollidesGoblin(player)) {
+
+            Goblin collidedGoblin = playerCollidesGoblin(player);
+            if (collidedGoblin != null) {
 //                System.out.println();
+                combat(player, collidedGoblin);
 //                player.isInCombat = true;
 //                while(player.isInCombat){
 //
 //                }
             }
         }
+        System.out.println("Message from Goblins: GG humans!");
     }
 
+    void combat(Human player, Goblin goblin) {
+        player.isInCombat = true;
+        while (player.isInCombat){
+            player.pickCombatAction(goblin);
+//            if (!player.isInCombat){
+////                fleeCombat() should make player.isInCombat = false
+//                break;
+//            }
+            if (goblin.isDead){
+//                drop potion
+                player.isInCombat = false;
+                break;
+            }
 
+            goblin.attemptAttack(player);
+            if(player.isDead){
+                player.isInCombat = false;
+                break;
+            }
+            System.out.println(String.format("Your health: %d/%d\n%s's health: %d/%d", player.currentHealth, player.maxHealth, goblin.name, goblin.currentHealth, goblin.maxHealth));
+        }
+//        spawn a new goblin
+    }
 
-    boolean playerCollidesGoblin(Human player) {
+    Goblin playerCollidesGoblin(Human player) {
         for (Goblin goblin: goblins) {
             if (Arrays.equals(goblin.coordinates, player.coordinates)) {
                 System.out.println("Oh no you have collided with a goblin!");
                 System.out.println(goblin);
-                return true;
+                return goblin;
             }
         }
-        return false;
+        return null;
     }
 
 

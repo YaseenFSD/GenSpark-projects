@@ -1,13 +1,15 @@
 package com.company;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class Human extends Animal {
     boolean isInCombat = false;
     HashMap<String, Integer> potions = new HashMap<>() {{
-        put("heal", 0);
-        put("armor", 0);
-        put("ultimate", 0);
+        put("heal", 10);
+        put("armor", 10);
+        put("ultimate", 10);
     }};
 
     Human() {
@@ -58,11 +60,24 @@ public class Human extends Animal {
 
     void increaseMaxHealth(int increaseBy) {
 //        increase max health by 'increaseBy'
+        this.maxHealth += increaseBy;
     }
+
+    void heal(){
+        this.currentHealth = this.maxHealth;
+    }
+
 
     void levelUpChance() {
 //        chance to increase level by 1 which should also increase maxHealth and fill health;
 //        the higher the level the less chance of leveling up
+        int randInt = new Random().nextInt((int) (this.level * .4) + 1);
+        if (randInt == 0) {
+            this.level++;
+            increaseMaxHealth(20);
+            this.currentHealth = this.maxHealth;
+            System.out.println(String.format("You leveled up! Your health is now %d/%d", this.currentHealth, this.maxHealth));
+        }
     }
 
     void pickCombatAction(Goblin goblin) {
@@ -82,7 +97,7 @@ public class Human extends Animal {
                 this.attemptAttack(goblin);
                 break;
             case 2:
-//                usePotion();
+                usePotion();
                 break;
             case 3:
 //                fleeCombat();
@@ -106,7 +121,6 @@ public class Human extends Animal {
 
     void move(char direction) {
 //        moves character by 1 unit towards 'direction'
-//        if (isOutOfBounds(direction)) return;
         switch (direction) {
             case 'n':
                 if(this.coordinates[1] + 1 > Land.maxYrange / 2){
@@ -148,14 +162,67 @@ public class Human extends Animal {
 
     void usePotion() {
 //        asks user which potion to use and uses if available
+       printInventory();
+
+        System.out.println("Choose a potion: 1- Heal,  2- Armor, 3- Ultimate, 4- Go back");
+        if (Land.sc.hasNextInt()) {
+            int option = Land.sc.nextInt();
+            switch (option) {
+                case 1:
+                    if(potions.get("heal") > 0){
+                    heal();
+                        potions.replace("heal", potions.get("heal") - 1);
+                    } else {
+                        System.out.println("Sorry you don't have any heal potions");
+                    }
+                    break;
+
+                    case 2:
+                        if(potions.get("armor") > 0){
+                            increaseMaxHealth(20);
+                            potions.replace("armor", potions.get("armor") - 1);
+                        } else {
+                            System.out.println("Sorry you don't have any armor potions");
+                        }
+
+                        break;
+                case 3:
+                    if(potions.get("ultimate") > 0){
+                        increaseMaxHealth(35);
+                        heal();
+                        levelUpChance();
+                        potions.replace("ultimate", potions.get("ultimate") - 1);
+                    }else {
+                        System.out.println("Sorry you don't have any ultimate potions");
+                    }
+                    break;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Invalid option");
+                    break;
+            }
+        } else {
+            Land.sc.next();
+            System.out.println("Invalid option");
+
+        }
     }
+
 
     private void printInventory() {
 //        prints potions with amount of each potion
+        System.out.println("Potions:");
+        for (Map.Entry<String,Integer> potion : potions.entrySet()) {
+            if (potion.getValue() != 0){
+                System.out.println(String.format("Potion: %s\tx%d", potion.getKey(), potion.getValue()));
+            }
+        }
     }
 
     private void printStats() {
 //        prints name, level, health, and maxHealth
+        System.out.println(this);
     }
 
     @Override

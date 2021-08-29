@@ -29,13 +29,13 @@ public class Land {
         player.isInCombat = true;
         while (player.isInCombat){
             player.pickCombatAction(goblin);
-//            if (!player.isInCombat){
-////                fleeCombat() should make player.isInCombat = false
-//                break;
-//            }
+            if (!player.isInCombat){
+                break;
+            }
             if (goblin.isDead){
-//                drop potion
-//                player.levelUpChance();
+//                TODO
+//                chance drop potion
+                player.levelUpChance();
                 player.isInCombat = false;
                 break;
             }
@@ -47,8 +47,10 @@ public class Land {
             }
             System.out.println(String.format("Your health: %d/%d\n%s's health: %d/%d", player.currentHealth, player.maxHealth, goblin.name, goblin.currentHealth, goblin.maxHealth));
         }
-//        goblins.removeIf()
 //        spawn a new goblin
+        goblins.removeIf(g -> g == goblin);
+        int randomGoblinLvl = new Random().nextInt(player.level) + 1;
+        spawnGoblin(randomValidSpawnLocation(player), randomGoblinLvl);
     }
 
     Goblin playerCollidesGoblin(Human player) {

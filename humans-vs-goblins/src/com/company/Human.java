@@ -100,7 +100,7 @@ public class Human extends Animal {
                 usePotion();
                 break;
             case 3:
-//                fleeCombat();
+                fleeCombat();
                 break;
             default:
                 System.out.println("Please choose a valid number");
@@ -207,6 +207,7 @@ public class Human extends Animal {
             System.out.println("Invalid option");
 
         }
+        printStats();
     }
 
 

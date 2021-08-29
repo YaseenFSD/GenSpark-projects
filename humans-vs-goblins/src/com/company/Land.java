@@ -13,7 +13,6 @@ public class Land {
 //        starts game and doesn't finish until Human is dead
         Human player = new Human();
         spawnWorld(player);
-//        goblins.forEach(x -> System.out.println(String.format("x = %d \n y = %d \n\n", x.coordinates[0], x.coordinates[1])));
         while (!player.isDead) {
             player.pickWorldAction();
 
@@ -25,16 +24,22 @@ public class Land {
         System.out.println("Message from Goblins: GG humans!");
     }
 
+
     void combat(Human player, Goblin goblin) {
         player.isInCombat = true;
         while (player.isInCombat){
             player.pickCombatAction(goblin);
             if (!player.isInCombat){
+//                if player flees
                 break;
             }
             if (goblin.isDead){
-//                TODO
 //                chance drop potion
+                ArrayList<String> droppedPotions = goblin.dropPotions();
+                droppedPotions.forEach(p -> {
+                    System.out.println("You've received a " + p + " potion");
+                    player.potions.computeIfPresent(p, (key, val) -> val + 1);
+                });
                 player.levelUpChance();
                 player.isInCombat = false;
                 break;
@@ -66,9 +71,9 @@ public class Land {
 
 
     void spawnWorld(Human player) {
-//        spawns human at 0,0 and spawns 10 goblins randomly
+//        spawns human at 0,0 and spawns 40 goblins randomly
         player.coordinates = new int[]{0, 0};
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 40; i++) {
             spawnGoblin(randomValidSpawnLocation(player));
         }
 

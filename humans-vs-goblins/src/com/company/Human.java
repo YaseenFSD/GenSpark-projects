@@ -7,9 +7,9 @@ import java.util.Random;
 public class Human extends Animal {
     boolean isInCombat = false;
     HashMap<String, Integer> potions = new HashMap<>() {{
-        put("heal", 10);
-        put("armor", 10);
-        put("ultimate", 10);
+        put("heal", 1);
+        put("armor", 0);
+        put("ultimate", 0);
     }};
 
     Human() {
@@ -30,7 +30,7 @@ public class Human extends Animal {
             switch (input) {
                 case 1:
 //                    View potions
-                    usePotion();
+                    usedPotion();
                     break;
                 case 2:
                     printStats();
@@ -63,7 +63,7 @@ public class Human extends Animal {
         this.maxHealth += increaseBy;
     }
 
-    void heal(){
+    void heal() {
         this.currentHealth = this.maxHealth;
     }
 
@@ -83,32 +83,35 @@ public class Human extends Animal {
     void pickCombatAction(Goblin goblin) {
 //        pick an action of flee, attack or heal
         printCombatActions();
-        int input;
-        if (Land.sc.hasNextInt()){
-           input = Land.sc.nextInt();
-        } else {
+
+        while (!Land.sc.hasNextInt()) {
             Land.sc.next();
             System.out.println("Invalid option");
-            return;
         }
+        int input = Land.sc.nextInt();
 
-        switch (input){
+        switch (input) {
             case 1:
                 this.attemptAttack(goblin);
                 break;
             case 2:
-                usePotion();
+                if(!usedPotion()){
+                    pickCombatAction(goblin);
+//                    ask for action again
+                };
                 break;
             case 3:
                 fleeCombat();
                 break;
             default:
                 System.out.println("Please choose a valid number");
+                pickCombatAction(goblin);
+//              ask for action again
                 break;
         }
     }
 
-    void printCombatActions(){
+    void printCombatActions() {
         System.out.println("1- attack, 2- use potion, 3- flee,");
 
     }
@@ -123,14 +126,14 @@ public class Human extends Animal {
 //        moves character by 1 unit towards 'direction'
         switch (direction) {
             case 'n':
-                if(this.coordinates[1] + 1 > Land.maxYrange / 2){
+                if (this.coordinates[1] + 1 > Land.maxYrange / 2) {
                     System.out.println("You can not go any further in this direction");
                     break;
                 }
                 this.coordinates[1]++;
                 break;
             case 's':
-                if(this.coordinates[1] - 1 < -(Land.maxYrange / 2)){
+                if (this.coordinates[1] - 1 < -(Land.maxYrange / 2)) {
                     System.out.println("You can not go any further in this direction");
                     break;
                 }
@@ -138,7 +141,7 @@ public class Human extends Animal {
 
                 break;
             case 'w':
-                if(this.coordinates[0] - 1 < -(Land.maxXrange / 2)){
+                if (this.coordinates[0] - 1 < -(Land.maxXrange / 2)) {
                     System.out.println("You can not go any further in this direction");
                     break;
                 }
@@ -146,7 +149,7 @@ public class Human extends Animal {
 
                 break;
             case 'e':
-                if(this.coordinates[0] + 1 > Land.maxXrange / 2){
+                if (this.coordinates[0] + 1 > Land.maxXrange / 2) {
                     System.out.println("You can not go any further in this direction");
                     break;
                 }
@@ -160,62 +163,66 @@ public class Human extends Animal {
     }
 
 
-    void usePotion() {
+    boolean usedPotion() {
 //        asks user which potion to use and uses if available
-       printInventory();
+        printInventory();
 
         System.out.println("Choose a potion: 1- Heal,  2- Armor, 3- Ultimate, 4- Go back");
         if (Land.sc.hasNextInt()) {
             int option = Land.sc.nextInt();
             switch (option) {
                 case 1:
-                    if(potions.get("heal") > 0){
-                    heal();
+                    if (potions.get("heal") > 0) {
+                        heal();
                         potions.replace("heal", potions.get("heal") - 1);
                     } else {
                         System.out.println("Sorry you don't have any heal potions");
+                        return false;
                     }
                     break;
 
-                    case 2:
-                        if(potions.get("armor") > 0){
-                            increaseMaxHealth(20);
-                            potions.replace("armor", potions.get("armor") - 1);
-                        } else {
-                            System.out.println("Sorry you don't have any armor potions");
-                        }
+                case 2:
+                    if (potions.get("armor") > 0) {
+                        increaseMaxHealth(20);
+                        potions.replace("armor", potions.get("armor") - 1);
+                    } else {
+                        System.out.println("Sorry you don't have any armor potions");
+                        return false;
+                    }
 
-                        break;
+                    break;
                 case 3:
-                    if(potions.get("ultimate") > 0){
+                    if (potions.get("ultimate") > 0) {
                         increaseMaxHealth(35);
                         heal();
                         levelUpChance();
                         potions.replace("ultimate", potions.get("ultimate") - 1);
-                    }else {
+                    } else {
                         System.out.println("Sorry you don't have any ultimate potions");
+                        return false;
                     }
                     break;
                 case 4:
-                    return;
+                    return false;
                 default:
                     System.out.println("Invalid option");
-                    break;
+                    return false;
             }
         } else {
             Land.sc.next();
             System.out.println("Invalid option");
-
+            return false;
         }
         printStats();
+        return true;
     }
 
 
     private void printInventory() {
 //        prints potions with amount of each potion
         System.out.println("Potions:");
-        for (Map.Entry<String,Integer> potion : potions.entrySet()) {
-            if (potion.getValue() != 0){
+        for (Map.Entry<String, Integer> potion : potions.entrySet()) {
+            if (potion.getValue() != 0) {
                 System.out.println(String.format("Potion: %s\tx%d", potion.getKey(), potion.getValue()));
             }
         }

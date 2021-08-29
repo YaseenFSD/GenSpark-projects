@@ -21,27 +21,39 @@ public class Goblin extends Animal {
     }
 
     private boolean droppedHealPotion() {
-//        TODO
 //        80% chance of returning true
+        int randInt = new Random().nextInt(100);
+        if (randInt < 80) {
+            return true;
+        }
         return false;
     }
 
     private boolean droppedArmorPotion() {
-//        TODO
 //        50% chance of returning true
+        int randInt = new Random().nextInt(100);
+        if (randInt < 50) {
+            return true;
+        }
         return false;
     }
 
     private boolean droppedUltimatePotion() {
-//          TODO
 //        20% chance of returning true
+        int randInt = new Random().nextInt(100);
+        if (randInt < 20) {
+            return true;
+        }
         return false;
     }
 
     ArrayList<String> dropPotions() {
-//        TODO
 //       return an ArrayList of potions dropped
-        return new ArrayList<>();
+        ArrayList<String> potions = new ArrayList<>();
+        if (droppedHealPotion()) potions.add("heal");
+        if (droppedArmorPotion()) potions.add("armor");
+        if (droppedUltimatePotion()) potions.add("ultimate");
+        return potions;
     }
 
     @Override

@@ -13,7 +13,7 @@ public enum ShipTypes {
             case Patrol_Boat:
                 return "Patrol Boat";
             default:
-                return this.toString();
+                return this.name();
         }
     }
 }

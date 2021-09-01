@@ -11,5 +11,7 @@ public class Game {
 
         playerOne.askName("player one");
         playerTwo.askName("player two");
+
+        playerOne.initializeShips();
     }
 }

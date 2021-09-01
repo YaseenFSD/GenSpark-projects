@@ -1,9 +1,9 @@
 package com.company;
 
-import java.util.ArrayList;
 
 public class Ship {
     private int size;
+    private Enum name;
     private int health;
     private boolean isHorizontal;
     private int[][] occupiedCells;
@@ -13,7 +13,8 @@ public class Ship {
 
     }
 
-    Ship(int size, int[][] occupiedCells){
+    Ship(Enum name, int size, int[][] occupiedCells){
+        this.name = name;
         this.size = size;
         this.occupiedCells = occupiedCells;
 

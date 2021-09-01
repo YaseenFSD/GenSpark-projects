@@ -29,35 +29,89 @@ public class PlayerBoard {
 
     void initializeShips() {
         setPatrolBoat();
+        printBoard();
     }
 
     void setPatrolBoat() {
-//        printBoard();
-//        System.out.println("Where would you like to place the patrol boat? (Size 2)");
-//        System.out.println("Input format: x,y");
-//        int[] coordinates;
-//        if (sc.hasNext("\\d,\\d")){
-//            String input = sc.next("\\d,\\d");
-//            coordinates = Arrays.stream(input.split(",")).mapToInt(x -> Integer.valueOf(x)).toArray();
-//        } else {
-//            System.out.println("Invalid format/input, please try again");
-//            setPatrolBoat();
-//            return;
-//        }
-//        if (cells[coordinates[0]][coordinates[1]] != 0){
-//            System.out.println("Invalid format/input, please try again");
-//            setPatrolBoat();
-//            return;
-//        }
-//        System.out.println("Vertical or horizontal? (v or h)");
-//        char directionInput = Character.toLowerCase(sc.next().charAt(0));
-//        if (directionInput != 'v' || directionInput != 'h') {
-//            System.out.println("Invalid format/input, please try again");
-//            setPatrolBoat();
-//            return;
-//        }
+        printBoard();
+        System.out.println("Where would you like to place the patrol boat? (Size 2)");
+        System.out.println("Input format: x,y");
+        int[] startingCoordinates;
+        if (sc.hasNext("\\d,\\d")){
+            String input = sc.next("\\d,\\d");
+            startingCoordinates = Arrays.stream(input.split(",")).mapToInt(x -> Integer.valueOf(x) - 1).toArray();
+        } else {
+            sc.next();
+            System.out.println("Invalid format/input, please try again");
+            setPatrolBoat();
+            return;
+        }
+        int rowNum = startingCoordinates[1];
+        int colNum = startingCoordinates[0];
+
+        if (cells[colNum][rowNum] != 0){
+            System.out.println("Invalid format/input, please try again");
+            setPatrolBoat();
+            return;
+        }
+        System.out.println("Vertical or horizontal? (v or h)");
+        char directionInput = Character.toLowerCase(sc.next().charAt(0));
+        if (directionInput != 'v' && directionInput != 'h') {
+            System.out.println("Invalid format/input, please try again");
+            setPatrolBoat();
+            return;
+        }
+//        Ship currentBoat = new Ship(Ships.Patrol_Boat,2, int );
+//        int rowNum = startingCoordinates[1];
+//        int colNum = startingCoordinates[0];
+        int[][] occupiedCells = new int[2][2];
+//        array is filled with arrays of coordinates to replicate reserved spots
+        occupiedCells[0] = new int[]{rowNum, colNum};
+        if (directionInput == 'v'){
+            for (int i = 1; i < 2; i++) {
+                if(rowNum + i >= maxY){
+                    System.out.println("Ship cannot be placed out of bounds, please try again");
+                    setPatrolBoat();
+                    return;
+                }
+                if (cells[rowNum + i][colNum] != 0){
+                    System.out.println("Ship collides with another ship, please try again");
+                    setPatrolBoat();
+                    return;
+                }
+                occupiedCells[i] = new int[]{rowNum + i , colNum};
+            }
+
+        }
+
+        if (directionInput == 'h') {
+            for (int i = 1; i < 2; i++) {
+                if(colNum + i >= maxX){
+                    System.out.println("Ship cannot be placed out of bounds, please try again");
+                    setPatrolBoat();
+                    return;
+                }
+                if (cells[rowNum][colNum + i] != 0){
+                    System.out.println("Ship collides with another ship, please try again");
+                    setPatrolBoat();
+                    return;
+                }
+                occupiedCells[i] = new int[]{rowNum , colNum + i};
+            }
+
+        }
+        for (int[] coordinates : occupiedCells) {
+            int row = coordinates[0];
+            int col = coordinates[1];
+            cells[row][col] = 1;
+        }
+        System.out.println(playerShips);
+
+        Ship patrol = new Ship(ShipTypes.Patrol_Boat, 2, occupiedCells);
+        playerShips.add(patrol);
 
     }
+
 
 //    String askBoatCoordinates(int size, String boatName) {
 //        return "";
@@ -75,6 +129,8 @@ public class PlayerBoard {
             for (int col = 0; col < maxY; col++) {
                 if (cells[row][col] == 0) {
                     System.out.print(" ~ ");
+                } else {
+                    System.out.print(" "+ cells[row][col] + " ");
                 }
             }
             System.out.println("");

@@ -9,6 +9,9 @@ public class Game {
         PlayerBoard playerOne = new PlayerBoard(sc);
         PlayerBoard playerTwo = new PlayerBoard(sc);
 
+//        System.out.println(ShipTypes.Patrol_Boat);
+//        System.out.println(ShipTypes.Destroyer);
+
         playerOne.askName("player one");
         playerTwo.askName("player two");
 

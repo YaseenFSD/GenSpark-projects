@@ -1,9 +1,6 @@
 package com.company;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class PlayerBoard {
     private Scanner sc;
@@ -37,7 +34,10 @@ public class PlayerBoard {
 
     void initializeShips() {
         setBoat(ShipTypes.Patrol_Boat, 2);
-        printBoard();
+        setBoat(ShipTypes.Submarine, 3);
+        setBoat(ShipTypes.Destroyer, 3);
+        setBoat(ShipTypes.Battleship, 4);
+        setBoat(ShipTypes.Carrier, 5);
     }
 
     void setBoat(Enum ShipType, int size) {
@@ -56,7 +56,6 @@ public class PlayerBoard {
             setBoat(ShipType, size);
             return;
         }
-
 
     }
 
@@ -118,12 +117,21 @@ public class PlayerBoard {
         for (int[] coordinates : occupiedCells) {
             int row = coordinates[0];
             int col = coordinates[1];
-            cells[row][col] = 1;
+            cells[row][col] = getId(ShipType);
         }
 
-        Ship patrol = new Ship(ShipType, size, occupiedCells);
-        playerShips.add(patrol);
+        Ship boat = new Ship(ShipType, size, occupiedCells);
+        playerShips.add(boat);
         return true;
+    }
+
+    int getId(Enum Ship) {
+        for (Map.Entry<Integer, Enum> ship : ids.entrySet()) {
+            if (ship.getValue() == Ship){
+                return ship.getKey();
+            }
+        }
+        return -1;
     }
 
 
@@ -164,9 +172,5 @@ public class PlayerBoard {
         }
     }
 
-    void insertShip(Ship ship) {
-//
-
-    }
 
 }

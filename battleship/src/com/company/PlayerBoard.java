@@ -16,10 +16,17 @@ public class PlayerBoard {
         put(4, ShipTypes.Battleship);
         put(5, ShipTypes.Carrier);
     }};
-//    private ArrayList<int[]> failedAttacks = new ArrayList<int[]>();
+    //    private ArrayList<int[]> failedAttacks = new ArrayList<int[]>();
 //    private ArrayList<int[]> successfulAttacks = new ArrayList<int[]>();
     private HashMap<String, Boolean> attemptedAttacks = new HashMap<String, Boolean>();
     private boolean playerHasAliveShips = true;
+
+    String getName(){
+        return this.name;
+    }
+    void setPlayerHasAliveShips(boolean bool){
+        this.playerHasAliveShips = bool;
+    }
 
     HashMap<String, Boolean> getAttemptedAttacks() {
         return this.attemptedAttacks;
@@ -237,6 +244,11 @@ public class PlayerBoard {
         for (Ship ship : opponent.playerShips) {
             for (int[] occupiedSpot : ship.getOccupiedCells()) {
                 if (Arrays.equals(attackPoint, occupiedSpot)) {
+                    ship.opponentHitShip();
+                    if (isEndGame(opponent)) {
+                        System.out.println(String.format("Congratulations %s you have knocked out all of %s ships!", this.name, opponent.name));
+                        opponent.setPlayerHasAliveShips(false);
+                    }
                     return true;
                 }
             }
@@ -244,9 +256,13 @@ public class PlayerBoard {
         return false;
     }
 
+    boolean isEndGame(PlayerBoard opponent) {
+        return opponent.playerShips.stream().allMatch(ship -> ship.getIsSunk());
+    }
+
     void attemptAttack(PlayerBoard opponentPlayer) {
 //        attempt attack on opponentPlayer
-        opponentPlayer.printAttackingBoard(opponentPlayer);
+        printAttackingBoard(opponentPlayer);
         int[] attackPoint = validAttackPoint(opponentPlayer);
         if (isSuccessAttack(opponentPlayer, attackPoint)) {
             opponentPlayer.attemptedAttacks.put(Arrays.toString(attackPoint), true);

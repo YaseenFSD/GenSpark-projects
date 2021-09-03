@@ -16,13 +16,16 @@ public class Game {
         playerOne.initializeShips();
         for (int i = 0; i < 50; i++) System.out.println();
 //        Hide previous content out of sight
-        System.out.println("Player two, your turn!");
+        System.out.println(playerTwo.getName() + ", your turn!");
         playerTwo.initializeShips();
         for (int i = 0; i < 50; i++) System.out.println();
 
 
-        while (playerOne.getPlayerHasAliveShips() && playerTwo.getPlayerHasAliveShips()){
+        while (playerOne.getPlayerHasAliveShips()){
             playerOne.attemptAttack(playerTwo);
+            if (!playerTwo.getPlayerHasAliveShips()){
+                break;
+            }
             playerTwo.attemptAttack(playerOne);
         }
     }

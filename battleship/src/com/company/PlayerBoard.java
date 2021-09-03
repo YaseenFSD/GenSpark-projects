@@ -150,7 +150,7 @@ public class PlayerBoard {
 
     int[] askStartingPosition(Enum ship, int size) {
         printBoard();
-        System.out.println("Where would you like to place the " + ship + " ? (Size " + size + ")");
+        System.out.println(this.name + " where would you like to place the " + ship + " ? (Size " + size + ")");
         System.out.println("Input format: x,y");
         int[] startingCoordinates;
         if (sc.hasNext("\\d,\\d")) {
@@ -198,11 +198,11 @@ public class PlayerBoard {
         for (int row = 0; row < maxX; row++) {
             System.out.print(row + 1);
             for (int col = 0; col < maxY; col++) {
-                if (!opponent.attemptedAttacks.containsKey(Arrays.toString(new int[]{col, row}))) {
+                if (!opponent.attemptedAttacks.containsKey(Arrays.toString(new int[]{row, col}))) {
                     System.out.print(" ~ ");
                     continue;
                 }
-                if (opponent.attemptedAttacks.get(Arrays.toString(new int[]{col, row}))) {
+                if (opponent.attemptedAttacks.get(Arrays.toString(new int[]{row, col}))) {
 //                    successful attack
                     System.out.print(" x ");
                 } else {
@@ -225,12 +225,12 @@ public class PlayerBoard {
             return validAttackPoint(opponent);
         }
         int[] coordinates = Arrays.stream(input.split(",")).mapToInt(x -> Integer.valueOf(x) - 1).toArray();
-        if (opponent.getAttemptedAttacks().containsKey(coordinates)) {
-//            TODO if .contains compares by reference this will not work
+        int[] cell = {coordinates[1], coordinates[0]};
+        if (opponent.getAttemptedAttacks().containsKey(Arrays.toString(cell))) {
             System.out.println("You have already tried that spot. Please try again");
             return validAttackPoint(opponent);
         }
-        return coordinates;
+        return cell;
     }
 
     boolean isSuccessAttack(PlayerBoard opponent, int[] attackPoint) {

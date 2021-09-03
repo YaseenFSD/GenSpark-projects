@@ -1,5 +1,6 @@
 package com.company;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Game {
@@ -9,12 +10,20 @@ public class Game {
         PlayerBoard playerOne = new PlayerBoard(sc);
         PlayerBoard playerTwo = new PlayerBoard(sc);
 
-//        System.out.println(ShipTypes.Patrol_Boat);
-//        System.out.println(ShipTypes.Destroyer);
 
         playerOne.askName("player one");
         playerTwo.askName("player two");
-
         playerOne.initializeShips();
+        for (int i = 0; i < 50; i++) System.out.println();
+//        Hide previous content out of sight
+        System.out.println("Player two, your turn!");
+        playerTwo.initializeShips();
+        for (int i = 0; i < 50; i++) System.out.println();
+
+
+        while (playerOne.getPlayerHasAliveShips() && playerTwo.getPlayerHasAliveShips()){
+            playerOne.attemptAttack(playerTwo);
+            playerTwo.attemptAttack(playerOne);
+        }
     }
 }

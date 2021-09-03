@@ -5,7 +5,6 @@ public class Ship {
     private int size;
     private Enum name;
     private int health;
-    private boolean isHorizontal;
     private int[][] occupiedCells;
     private boolean isSunk;
 
@@ -16,12 +15,13 @@ public class Ship {
     Ship(Enum name, int size, int[][] occupiedCells){
         this.name = name;
         this.size = size;
+        this.health = size;
         this.occupiedCells = occupiedCells;
 
     }
 
-    void setIsHorizontal(boolean isHorizontal){
-        this.isHorizontal = isHorizontal;
+    int[][] getOccupiedCells(){
+        return this.occupiedCells;
     }
 
     void opponentHitShip() {

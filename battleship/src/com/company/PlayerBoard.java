@@ -16,6 +16,18 @@ public class PlayerBoard {
         put(4, ShipTypes.Battleship);
         put(5, ShipTypes.Carrier);
     }};
+//    private ArrayList<int[]> failedAttacks = new ArrayList<int[]>();
+//    private ArrayList<int[]> successfulAttacks = new ArrayList<int[]>();
+    private HashMap<String, Boolean> attemptedAttacks = new HashMap<String, Boolean>();
+    private boolean playerHasAliveShips = true;
+
+    HashMap<String, Boolean> getAttemptedAttacks() {
+        return this.attemptedAttacks;
+    }
+
+    boolean getPlayerHasAliveShips() {
+        return this.playerHasAliveShips;
+    }
 
     PlayerBoard() {
 
@@ -60,7 +72,7 @@ public class PlayerBoard {
     }
 
     boolean isValidStartPoint(int rowNum, int colNum) {
-        if (cells[colNum][rowNum] != 0) {
+        if (cells[rowNum][colNum] != 0) {
             System.out.println("Invalid format/input, please try again");
             return false;
         }
@@ -71,6 +83,7 @@ public class PlayerBoard {
         System.out.println("Vertical or horizontal? (v or h)");
         char directionInput = Character.toLowerCase(sc.next().charAt(0));
         if (directionInput != 'v' && directionInput != 'h') {
+//            sc.next();
             System.out.println("Invalid format/input, please try again");
             return setDirection();
         }
@@ -120,14 +133,14 @@ public class PlayerBoard {
             cells[row][col] = getId(ShipType);
         }
 
-        Ship boat = new Ship(ShipType, size, occupiedCells);
-        playerShips.add(boat);
+        Ship ship = new Ship(ShipType, size, occupiedCells);
+        playerShips.add(ship);
         return true;
     }
 
     int getId(Enum Ship) {
         for (Map.Entry<Integer, Enum> ship : ids.entrySet()) {
-            if (ship.getValue() == Ship){
+            if (ship.getValue() == Ship) {
                 return ship.getKey();
             }
         }
@@ -172,5 +185,74 @@ public class PlayerBoard {
         }
     }
 
+
+    void printAttackingBoard(PlayerBoard opponent) {
+        System.out.println(String.format("Choose a position, %s", this.name));
+//        print the board with successful attack as 'x' and non-successful attacks as 'm'
+        System.out.print(" ");
+        for (int i = 0; i < maxY; i++) {
+            System.out.print(" " + (i + 1) + " ");
+        }
+        System.out.println("");
+
+        for (int row = 0; row < maxX; row++) {
+            System.out.print(row + 1);
+            for (int col = 0; col < maxY; col++) {
+                if (!opponent.attemptedAttacks.containsKey(Arrays.toString(new int[]{col, row}))) {
+                    System.out.print(" ~ ");
+                    continue;
+                }
+                if (opponent.attemptedAttacks.get(Arrays.toString(new int[]{col, row}))) {
+//                    successful attack
+                    System.out.print(" x ");
+                } else {
+//                    failed attack
+                    System.out.print(" m ");
+                }
+            }
+            System.out.println("");
+        }
+    }
+
+    int[] validAttackPoint(PlayerBoard opponent) {
+//        asks for attacking point and validates it
+        String input;
+        if (sc.hasNext("\\d,\\d")) {
+            input = sc.next("\\d,\\d");
+        } else {
+            sc.next();
+            System.out.println("Invalid spot please try again");
+            return validAttackPoint(opponent);
+        }
+        int[] coordinates = Arrays.stream(input.split(",")).mapToInt(x -> Integer.valueOf(x) - 1).toArray();
+        if (opponent.getAttemptedAttacks().containsKey(coordinates)) {
+//            TODO if .contains compares by reference this will not work
+            System.out.println("You have already tried that spot. Please try again");
+            return validAttackPoint(opponent);
+        }
+        return coordinates;
+    }
+
+    boolean isSuccessAttack(PlayerBoard opponent, int[] attackPoint) {
+        for (Ship ship : opponent.playerShips) {
+            for (int[] occupiedSpot : ship.getOccupiedCells()) {
+                if (Arrays.equals(attackPoint, occupiedSpot)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void attemptAttack(PlayerBoard opponentPlayer) {
+//        attempt attack on opponentPlayer
+        opponentPlayer.printAttackingBoard(opponentPlayer);
+        int[] attackPoint = validAttackPoint(opponentPlayer);
+        if (isSuccessAttack(opponentPlayer, attackPoint)) {
+            opponentPlayer.attemptedAttacks.put(Arrays.toString(attackPoint), true);
+        } else {
+            opponentPlayer.attemptedAttacks.put(Arrays.toString(attackPoint), false);
+        }
+    }
 
 }

@@ -16,8 +16,6 @@ public class PlayerBoard {
         put(4, ShipTypes.Battleship);
         put(5, ShipTypes.Carrier);
     }};
-    //    private ArrayList<int[]> failedAttacks = new ArrayList<int[]>();
-//    private ArrayList<int[]> successfulAttacks = new ArrayList<int[]>();
     private HashMap<String, Boolean> attemptedAttacks = new HashMap<String, Boolean>();
     private boolean playerHasAliveShips = true;
 

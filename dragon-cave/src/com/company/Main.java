@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Random;
 
@@ -12,15 +13,25 @@ public class Main {
         System.out.println("is greedy and hungry and will eat you on sight.");
         System.out.println("Which cave will you go into? (1 or 2)");
 
-        int input = sc.nextInt();
+        int input = -1;
+        while (input == -1) {
+            try {
+                input = askNumber(sc);
+            } catch (InputMismatchException err) {
+                System.out.println("Invalid input, please enter a valid number");
+                sc.next();
+            }
+        }
         Random rand = new Random();
         int randInt = rand.nextInt(2) + 1;
-        if (randInt == input){
+        if (randInt == input) {
             goodCave();
         } else {
             badCave();
         }
     }
+
+
     public static void goodCave() {
         System.out.println("It is dark and spooky...");
         System.out.println("You approach the cave...");
@@ -33,5 +44,14 @@ public class Main {
         System.out.println("It is dark and spooky...");
         System.out.println("A large dragon jumps out in front of you! He opens his jaws and...");
         System.out.println("Gobbles you down in one bite!");
+    }
+
+    public static int askNumber(Scanner sc){
+        int input = sc.nextInt();
+        if (input != 1 && input != 2) {
+            System.out.println("Invalid input, please enter a valid number");
+            return -1;
+        }
+        return input;
     }
 }

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class Crypt {
     private Scanner sc;
@@ -17,6 +18,8 @@ public class Crypt {
 
     public void encrypt(String filename, String message) throws IOException {
 //        askKey();
+//        System.out.println(encryptString("The sky above the port was the color of television, tuned to a dead channel.", 13));
+//        System.out.println(decryptString("Gur fxl nobir gur cbeg jnf gur pbybe bs gryrivfvba, gharq gb n qrnq punaary.", 13));
 //        System.out.println( encryptChar('a', 2));
 //        System.out.println( encryptChar('.', 25));
 //        System.out.println( encryptChar('A', 2));
@@ -55,6 +58,23 @@ public class Crypt {
         }
     }
 
+    String encryptString(String message, int key) {
+        String result = "";
+        for (int i = 0; i < message.length(); i++) {
+            result += encryptChar(message.charAt(i), key);
+        }
+        return result;
+    }
+
+    String decryptString(String message, int key) {
+        String result = "";
+        for (int i = 0; i < message.length(); i++) {
+            result += decryptChar(message.charAt(i), key);
+        }
+        return result;
+
+    }
+
     char encryptChar(char letter, int key) {
         boolean isAlphaLetter = p.matcher(String.valueOf(letter)).matches();
 //        char charRep = letter.charAt(0);
@@ -67,7 +87,7 @@ public class Crypt {
 //        90 is 'Z'
         int newAsciiVal;
         int alphaOrder; //  // alphaOrder example : 0 is a/A. 25 is z/Z
-        if (isLowerCase){
+        if (isLowerCase) {
             alphaOrder = asciiVal - 97;
             newAsciiVal = alphaOrder + key;
             if (newAsciiVal > 25) {
@@ -94,7 +114,7 @@ public class Crypt {
         boolean isLowerCase = letter > 90 ? true : false;
         int newAsciiVal;
         int alphaOrder; // alphaOrder example : 0 is a/A. 25 is z/Z
-        if (isLowerCase){
+        if (isLowerCase) {
             alphaOrder = asciiVal - 97;
             newAsciiVal = alphaOrder - key;
             while (newAsciiVal < 0) {

@@ -1,9 +1,12 @@
 package com.company;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -43,21 +46,30 @@ public class Crypt {
 
     public void encrypt(String filename, String message) throws IOException {
         int key = askKey();
-        System.out.println(key);
+//        System.out.println(key);
+        String encrypted = encryptString(message, key);
+        encrypted += "\nKey: " + key;
 
 
-        Files.write(Paths.get(filename), message.getBytes(StandardCharsets.UTF_8));
+        Files.write(Paths.get(filename), encrypted.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String decrypt(String filename) {
+    public String decrypt(String filename) throws IOException {
         int key = askKey();
-        return "";
+        List<String> lines = Files.readAllLines(Paths.get(filename));
+        lines.remove(lines.size() - 1);
+        String result = "";
+        for (String line : lines) {
+            result += decryptString(line, key);
+            System.out.println(decryptString(line, key));
+        }
+        return result;
     }
 
     private int askKey() {
         System.out.println("Enter a key (Integer)");
         if (sc.hasNextInt()) {
-            return sc.nextInt();
+            return Math.abs(sc.nextInt());
         } else {
             System.out.println("Invalid Key. Key must be an integer");
             sc.next();
@@ -127,6 +139,8 @@ public class Crypt {
             alphaOrder = asciiVal - 97;
             newAsciiVal = alphaOrder - key;
             while (newAsciiVal < 0) {
+//                any letter that shifts more than the beginning (letter a) will start shifting from z (26th letter)
+
                 newAsciiVal = 26 + newAsciiVal;
             }
 
@@ -136,6 +150,7 @@ public class Crypt {
             alphaOrder = asciiVal - 65;
             newAsciiVal = alphaOrder - key;
             while (newAsciiVal < 0) {
+//                any letter that shifts more than the beginning (letter a) will start shifting from z (26th letter)
                 newAsciiVal = 26 + newAsciiVal;
             }
 

@@ -8,7 +8,17 @@ public class Main {
     public static void main(String[] args) throws IOException {
 	// write your code here
         Scanner sc = new Scanner(System.in);
-        String message = "This is a testing message";
-        new Crypt(sc).encrypt("encryption.txt" ,message);
+        Crypt crypt = new Crypt(sc);
+//        String message = "This is a testing message";
+        Enum cryptType = crypt.askCryptType();
+        if (Crypts.Encrypt.equals(cryptType)) {
+            String filename = crypt.askFileName();
+            String message = crypt.askMessage();
+            crypt.encrypt(filename, message);
+        } else if (Crypts.Decrypt.equals(cryptType)) {
+            String filename = crypt.askFileName();
+            crypt.decrypt(filename);
+        }
     }
+
 }

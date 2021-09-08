@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 public class Crypt {
     private Scanner sc;
@@ -16,39 +15,47 @@ public class Crypt {
         this.sc = sc;
     }
 
+    Enum askCryptType(){
+//        returns "encrypt" if user wants to encrypt a message and "decrypt" if user wants to decrypt message
+        System.out.println("Do you wish to encrypt or decrypt a message?");
+        String input = sc.nextLine();
+        if (input.contains("encrypt")) {
+            return Crypts.Encrypt;
+        } else if (input.contains("decrypt")) {
+            return Crypts.Decrypt;
+        } else {
+            System.out.println("Invalid option, Try again");
+            return askCryptType();
+        }
+    }
+
+    String askMessage(){
+        System.out.println("Enter the message you would like to encrypt");
+        String input = sc.nextLine();
+        return input;
+    }
+
+    String askFileName() {
+        System.out.println("Input the filename");
+        String input = sc.nextLine();
+        return input;
+    }
+
     public void encrypt(String filename, String message) throws IOException {
-//        askKey();
-//        System.out.println(encryptString("The sky above the port was the color of television, tuned to a dead channel.", 13));
-//        System.out.println(decryptString("Gur fxl nobir gur cbeg jnf gur pbybe bs gryrivfvba, gharq gb n qrnq punaary.", 13));
-//        System.out.println( encryptChar('a', 2));
-//        System.out.println( encryptChar('.', 25));
-//        System.out.println( encryptChar('A', 2));
-//        System.out.println( encryptChar('0', 29));
-//        System.out.println( encryptChar('z', 1));
-//        System.out.println( encryptChar('z', 26));
-//        System.out.println( encryptChar('Z', 27));
-//        System.out.println( encryptChar('Z', 53));
-//
-//        System.out.println("Decrypting");
-//        System.out.println(decryptChar('c',2));
-//        System.out.println(decryptChar('.',25));
-//        System.out.println(decryptChar('C',2));
-//        System.out.println(decryptChar('0',29));
-//        System.out.println(decryptChar('a',1));
-//        System.out.println(decryptChar('z',26));
-//        System.out.println(decryptChar('A',27));
-//        System.out.println(decryptChar('A',53));
+        int key = askKey();
+        System.out.println(key);
 
 
         Files.write(Paths.get(filename), message.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String decrypt(String filename, int key) {
+    public String decrypt(String filename) {
+        int key = askKey();
         return "";
     }
 
     private int askKey() {
-        System.out.println("Enter a key 1-52");
+        System.out.println("Enter a key (Integer)");
         if (sc.hasNextInt()) {
             return sc.nextInt();
         } else {
@@ -58,7 +65,8 @@ public class Crypt {
         }
     }
 
-    String encryptString(String message, int key) {
+    private String encryptString(String message, int key) {
+//        return message.chars().map(x -> encryptChar((char) x, key)).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
         String result = "";
         for (int i = 0; i < message.length(); i++) {
             result += encryptChar(message.charAt(i), key);
@@ -66,7 +74,8 @@ public class Crypt {
         return result;
     }
 
-    String decryptString(String message, int key) {
+    private String decryptString(String message, int key) {
+//        return message.chars().map(x -> decryptChar((char) x, key)).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
         String result = "";
         for (int i = 0; i < message.length(); i++) {
             result += decryptChar(message.charAt(i), key);
@@ -75,7 +84,7 @@ public class Crypt {
 
     }
 
-    char encryptChar(char letter, int key) {
+    private char encryptChar(char letter, int key) {
         boolean isAlphaLetter = p.matcher(String.valueOf(letter)).matches();
 //        char charRep = letter.charAt(0);
         if (!isAlphaLetter) {
@@ -105,7 +114,7 @@ public class Crypt {
         return (char) newAsciiVal;
     }
 
-    char decryptChar(char letter, int key) {
+    private char decryptChar(char letter, int key) {
         boolean isAlphaLetter = p.matcher(String.valueOf(letter)).matches();
         if (!isAlphaLetter) {
             return letter;

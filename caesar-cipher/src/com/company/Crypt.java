@@ -17,13 +17,26 @@ public class Crypt {
 
     public void encrypt(String filename, String message) throws IOException {
 //        askKey();
-//        System.out.println( encryptChar("a", 2));
-//        System.out.println( encryptChar(".", 25));
-//        System.out.println( encryptChar("A", 2));
-//        System.out.println( encryptChar("0", 29));
-//        System.out.println( encryptChar("z", 1));
-//        System.out.println( encryptChar("z", 27));
-//        System.out.println( encryptChar("Z", 27));
+//        System.out.println( encryptChar('a', 2));
+//        System.out.println( encryptChar('.', 25));
+//        System.out.println( encryptChar('A', 2));
+//        System.out.println( encryptChar('0', 29));
+//        System.out.println( encryptChar('z', 1));
+//        System.out.println( encryptChar('z', 26));
+//        System.out.println( encryptChar('Z', 27));
+//        System.out.println( encryptChar('Z', 53));
+//
+//        System.out.println("Decrypting");
+//        System.out.println(decryptChar('c',2));
+//        System.out.println(decryptChar('.',25));
+//        System.out.println(decryptChar('C',2));
+//        System.out.println(decryptChar('0',29));
+//        System.out.println(decryptChar('a',1));
+//        System.out.println(decryptChar('z',26));
+//        System.out.println(decryptChar('A',27));
+//        System.out.println(decryptChar('A',53));
+
+
         Files.write(Paths.get(filename), message.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -42,29 +55,29 @@ public class Crypt {
         }
     }
 
-    char encryptChar(String letter, int key) {
-        boolean isAlphaLetter = p.matcher(letter).matches();
-        char charRep = letter.charAt(0);
+    char encryptChar(char letter, int key) {
+        boolean isAlphaLetter = p.matcher(String.valueOf(letter)).matches();
+//        char charRep = letter.charAt(0);
         if (!isAlphaLetter) {
-            return charRep;
+            return letter;
         }
 
-        int asciiVal = charRep;
-        boolean isLowerCase = charRep > 90 ? true : false;
+        int asciiVal = letter;
+        boolean isLowerCase = letter > 90 ? true : false;
 //        90 is 'Z'
         int newAsciiVal;
-        int alphaOrder; // 0 should be a/A. 25 should be z/Z
+        int alphaOrder; //  // alphaOrder example : 0 is a/A. 25 is z/Z
         if (isLowerCase){
             alphaOrder = asciiVal - 97;
             newAsciiVal = alphaOrder + key;
-            while (newAsciiVal > 25) {
+            if (newAsciiVal > 25) {
                 newAsciiVal %= 26;
             }
             newAsciiVal += 97;
         } else {
             alphaOrder = asciiVal - 65;
             newAsciiVal = alphaOrder + key;
-            while (newAsciiVal > 25) {
+            if (newAsciiVal > 25) {
                 newAsciiVal %= 26;
             }
             newAsciiVal += 65;
@@ -72,12 +85,34 @@ public class Crypt {
         return (char) newAsciiVal;
     }
 
-    char decryptChar(String letter) {
-        boolean isAlphaLetter = p.matcher(letter).matches();
-        if (isAlphaLetter) {
-            //TODO
-         }
-        return letter.charAt(0);
+    char decryptChar(char letter, int key) {
+        boolean isAlphaLetter = p.matcher(String.valueOf(letter)).matches();
+        if (!isAlphaLetter) {
+            return letter;
+        }
+        int asciiVal = letter;
+        boolean isLowerCase = letter > 90 ? true : false;
+        int newAsciiVal;
+        int alphaOrder; // alphaOrder example : 0 is a/A. 25 is z/Z
+        if (isLowerCase){
+            alphaOrder = asciiVal - 97;
+            newAsciiVal = alphaOrder - key;
+            while (newAsciiVal < 0) {
+                newAsciiVal = 26 + newAsciiVal;
+            }
+
+            newAsciiVal += 97;
+
+        } else {
+            alphaOrder = asciiVal - 65;
+            newAsciiVal = alphaOrder - key;
+            while (newAsciiVal < 0) {
+                newAsciiVal = 26 + newAsciiVal;
+            }
+
+            newAsciiVal += 65;
+        }
+        return (char) newAsciiVal;
     }
 
 }

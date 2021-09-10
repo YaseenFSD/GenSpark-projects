@@ -28,6 +28,7 @@ public class Game {
     private ArrayList<Character> mistakes = new ArrayList<>();
     private String name = "";
     private Scanner sc;
+    char SEPARATOR = ':';
 
     void start() {
         Scanner sc = new Scanner(System.in);
@@ -107,7 +108,7 @@ public class Game {
 
     void printLeaderboardRank(){
         List<String> scores;
-        char SEPARATOR = ':';
+
         try {
             scores = Files.readAllLines(Paths.get("src/com/company/scores.txt"));
         } catch (IOException err) {
@@ -141,13 +142,54 @@ public class Game {
     }
 
     void saveScore() {
+//       remove older score if lower
+//       save new score if higher or old score does not exist
         String line = String.format("%s:%s\n", name, score);
+        List<String> scores;
         try {
-            Files.writeString(Paths.get("src/com/company/scores.txt"), line, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
-        } catch (IOException err) {
+            scores = Files.readAllLines(Paths.get("src/com/company/scores.txt"));
+        } catch (IOException err){
             System.out.println(err);
             System.out.println("Error: Scores file not found");
+            return;
         }
+        if (scores.isEmpty()){
+            try {
+                Files.writeString(Paths.get("src/com/company/scores.txt"), line, StandardCharsets.UTF_8);
+            } catch (IOException err){
+                System.out.println(err);
+                System.out.println("Error: Scores file not found");
+                return;
+            }
+        }
+
+        List<String> scoresWithoutOldScore = scores.stream().filter(nameAndScore -> {
+            String name = nameAndScore.substring(0, nameAndScore.indexOf(SEPARATOR));
+            int score = Integer.parseInt(nameAndScore.substring(nameAndScore.indexOf(SEPARATOR) + 1));
+            if (this.name.equals(name) && this.score > score) {
+                return false;
+            }
+                return true;
+        }).collect(Collectors.toList());
+
+        if (scoresWithoutOldScore.size() != scores.size()){
+//            has new high score
+            try{
+                Files.write(Paths.get("src/com/company/scores.txt"), scoresWithoutOldScore, StandardCharsets.UTF_8);
+                Files.writeString(Paths.get("src/com/company/scores.txt"), line, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+            } catch (IOException err){
+                System.out.println(err);
+                System.out.println("Error: Scores file not found");
+            }
+        }
+
+
+//        try {
+//            Files.writeString(Paths.get("src/com/company/scores.txt"), line, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+//        } catch (IOException err) {
+//            System.out.println(err);
+//            System.out.println("Error: Scores file not found");
+//        }
     }
 
     boolean isEnd() {

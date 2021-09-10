@@ -1,0 +1,6 @@
+yaseen:1
+bassam:20
+justin:15
+asdf:100
+qwert:90
+zxy:45

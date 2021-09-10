@@ -7,19 +7,19 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Game {
     private static final String[] words = {"banana", "apple", "monkey", "orange", "cat", "dog", "one", "monster"};
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_CYAN = "\u001B[36m";
     boolean gameIsDone = false;
     private int stage = 0;
     private int score = 0;
@@ -30,14 +30,13 @@ public class Game {
     private Scanner sc;
 
     void start() {
-//        TODO
         Scanner sc = new Scanner(System.in);
         this.sc = sc;
 
         setRandomWord();
         setName();
         initializeCurrentGuess();
-//        System.out.println(answerWord);
+        System.out.println(answerWord);
     }
 
     void setName() {
@@ -56,8 +55,7 @@ public class Game {
 
 
     void play() {
-//        TODO
-//        print current stage and current letters guessed
+        printLeaderboardRank();
         printMan();
         printCurrentGuess();
         printMistakes();
@@ -82,7 +80,7 @@ public class Game {
         } else if (input == 'n') {
             gameIsDone = true;
             if (isWin()) {
-//               TODO saveScore();
+                saveScore();
             }
 //            TODO printLeaderboardRank()
         } else {
@@ -107,6 +105,51 @@ public class Game {
         return stage == 5;
     }
 
+    void printLeaderboardRank(){
+        List<String> scores;
+        char SEPARATOR = ':';
+        try {
+            scores = Files.readAllLines(Paths.get("src/com/company/scores.txt"));
+        } catch (IOException err) {
+            System.out.println(err);
+            System.out.println("Scores file not found");
+            return;
+        }
+        if (scores.size() < 2) return;
+        HashMap<String, Integer> mapScores = new HashMap<>();
+        var scoresNameSortedByScore = scores.stream().sorted((x, y) -> {
+            int score1 = Integer.parseInt(x.substring(x.indexOf(SEPARATOR) + 1));
+            int score2 = Integer.parseInt(y.substring(y.indexOf(SEPARATOR) + 1));
+            return score2 - score1;
+        }).map(x -> {
+            String name = x.substring(0, x.indexOf(SEPARATOR));
+            int score = Integer.parseInt(x.substring(x.indexOf(SEPARATOR) + 1));
+            mapScores.put(name, score);
+            return name;
+        }).collect(Collectors.toList());
+
+        System.out.println("Top rankings");
+        IntStream.range(0, 3).mapToObj(i -> {
+            String currentName = scoresNameSortedByScore.get(i);
+            if(currentName.equals(name)) {
+                System.out.println(ANSI_CYAN + (i + 1) + ". " + currentName + " - " + mapScores.get(currentName) + ANSI_RESET);
+            } else {
+                System.out.println((i + 1) + ". " + currentName + " - " + mapScores.get(currentName));
+            }
+            return i;
+        }).collect(Collectors.toList());
+    }
+
+    void saveScore() {
+        String line = String.format("%s:%s\n", name, score);
+        try {
+            Files.writeString(Paths.get("src/com/company/scores.txt"), line, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        } catch (IOException err) {
+            System.out.println(err);
+            System.out.println("Error: Scores file not found");
+        }
+    }
+
     boolean isEnd() {
         if (isWin()) {
             System.out.println("Congrats! you got it!");
@@ -114,7 +157,7 @@ public class Game {
             return true;
         } else if (isLoss()) {
             System.out.println("Oh no hangman is gone :(");
-//            TODO saveScore();
+            saveScore();
             resetScore();
             return true;
         } else {

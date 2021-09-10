@@ -1,8 +1,6 @@
 package com.company;
 
 
-import java.io.IOException;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -10,8 +8,8 @@ public class Main {
         Game game = new Game();
         game.start();
 //        while (!game.gameIsDone) {
-////
-////            game.play();
+//
+            game.play();
 //        }
     }
 }

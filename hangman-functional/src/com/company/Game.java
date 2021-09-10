@@ -56,7 +56,6 @@ public class Game {
 
 
     void play() {
-        printLeaderboardRank();
         printMan();
         printCurrentGuess();
         printMistakes();
@@ -83,7 +82,7 @@ public class Game {
             if (isWin()) {
                 saveScore();
             }
-//            TODO printLeaderboardRank()
+            printLeaderboardRank();
         } else {
             System.out.println("Invalid option");
             askRestart();
@@ -116,7 +115,7 @@ public class Game {
             System.out.println("Scores file not found");
             return;
         }
-        if (scores.size() < 2) return;
+        if (scores.size() < 3) return;
         HashMap<String, Integer> mapScores = new HashMap<>();
         var scoresNameSortedByScore = scores.stream().sorted((x, y) -> {
             int score1 = Integer.parseInt(x.substring(x.indexOf(SEPARATOR) + 1));
@@ -156,6 +155,7 @@ public class Game {
         if (scores.isEmpty()){
             try {
                 Files.writeString(Paths.get("src/com/company/scores.txt"), line, StandardCharsets.UTF_8);
+                return;
             } catch (IOException err){
                 System.out.println(err);
                 System.out.println("Error: Scores file not found");
@@ -184,12 +184,6 @@ public class Game {
         }
 
 
-//        try {
-//            Files.writeString(Paths.get("src/com/company/scores.txt"), line, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
-//        } catch (IOException err) {
-//            System.out.println(err);
-//            System.out.println("Error: Scores file not found");
-//        }
     }
 
     boolean isEnd() {

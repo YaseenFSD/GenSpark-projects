@@ -28,6 +28,7 @@ public class Game {
     private ArrayList<Character> mistakes = new ArrayList<>();
     private String name = "";
     private Scanner sc;
+
     void start() {
 //        TODO
         Scanner sc = new Scanner(System.in);
@@ -36,7 +37,7 @@ public class Game {
         setRandomWord();
         setName();
         initializeCurrentGuess();
-        System.out.println(answerWord);
+//        System.out.println(answerWord);
     }
 
     void setName() {
@@ -46,11 +47,7 @@ public class Game {
     }
 
     void setRandomWord() {
-        try {
-            answerWord = generateRandomWord();
-        } catch (Exception err) {
-            answerWord = randomLocalWord();
-        }
+        answerWord = generateRandomWord();
     }
 
     void initializeCurrentGuess() {
@@ -65,19 +62,76 @@ public class Game {
         printCurrentGuess();
         printMistakes();
         makeGuess();
-//          if(isEnd()){
-//          askRestart()
-//          }
+        if (isEnd()) {
+            askRestart();
+        }
+    }
+
+    void replay() {
+        setRandomWord();
+        initializeCurrentGuess();
+        mistakes.clear();
+        stage = 0;
+    }
+
+    void askRestart() {
+        System.out.println("Would you like to play again? (y or n)");
+        Character input = Character.toLowerCase(sc.next().charAt(0));
+        if (input == 'y') {
+            replay();
+        } else if (input == 'n') {
+            gameIsDone = true;
+            if (isWin()) {
+//               TODO saveScore();
+            }
+//            TODO printLeaderboardRank()
+        } else {
+            System.out.println("Invalid option");
+            askRestart();
+        }
+    }
+
+    void addScore() {
+        score += 5 - stage;
+    }
+
+    void resetScore() {
+        score = 0;
+    }
+
+    boolean isWin() {
+        return !currentGuess.contains('_');
+    }
+
+    boolean isLoss() {
+        return stage == 5;
+    }
+
+    boolean isEnd() {
+        if (isWin()) {
+            System.out.println("Congrats! you got it!");
+            addScore();
+            return true;
+        } else if (isLoss()) {
+            System.out.println("Oh no hangman is gone :(");
+//            TODO saveScore();
+            resetScore();
+            return true;
+        } else {
+//            still going
+            return false;
+        }
     }
 
     void makeGuess() {
-        Character input = sc.next().charAt(0);
+        Character input = Character.toLowerCase(sc.next().charAt(0));
         if (answerWord.contains(String.valueOf(input))) {
 //            correct guess
             IntStream.range(0, answerWord.length()).mapToObj(index -> {
                 if (answerWord.charAt(index) == input) {
                     currentGuess.set(index, input);
-                };
+                }
+                ;
                 return index;
             }).collect(Collectors.toList());
 
@@ -119,20 +173,23 @@ public class Game {
                 System.out.println(x);
                 return x;
             }).collect(Collectors.toList());
-        } catch (IOException err){
+        } catch (IOException err) {
             System.out.println("Error: Stage file not found");
         }
     }
 
-    String generateRandomWord() throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://random-word-api.herokuapp.com/word?number=1"))
-                .build();
-        String json = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-
-        ObjectMapper obj = new ObjectMapper();
-        List<String> words = obj.readValue(json, List.class);
-        return words.get(0);
+    String generateRandomWord() {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://random-word-api.herokuapp.com/word?number=1"))
+                    .build();
+            String json = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            ObjectMapper obj = new ObjectMapper();
+            List<String> words = obj.readValue(json, List.class);
+            return words.get(0);
+        } catch (Exception err) {
+            return randomLocalWord();
+        }
     }
 
     String randomLocalWord() {

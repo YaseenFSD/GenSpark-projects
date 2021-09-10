@@ -7,9 +7,8 @@ public class Main {
 	// write your code here
         Game game = new Game();
         game.start();
-//        while (!game.gameIsDone) {
-//
+        while (!game.gameIsDone) {
             game.play();
-//        }
+        }
     }
 }

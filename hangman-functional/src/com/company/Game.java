@@ -9,10 +9,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Game {
@@ -21,8 +24,8 @@ public class Game {
     private int stage = 0;
     private int score = 0;
     private String answerWord = "";
-    private String currentGuess = "";
-    private String mistakes = "";
+    private ArrayList<Character> currentGuess = new ArrayList<>();
+    private ArrayList<Character> mistakes = new ArrayList<>();
     private String name = "";
     private Scanner sc;
     void start() {
@@ -34,7 +37,6 @@ public class Game {
         setName();
         initializeCurrentGuess();
         System.out.println(answerWord);
-//        System.out.println(Stream.of(answerWord.split("")).collect(Collectors.toList()));
     }
 
     void setName() {
@@ -52,7 +54,7 @@ public class Game {
     }
 
     void initializeCurrentGuess() {
-        currentGuess = Stream.of(answerWord.split("")).map(x -> "_").collect(Collectors.joining());
+        currentGuess = Stream.of(answerWord.split("")).map(x -> '_').collect(Collectors.toCollection(ArrayList::new));
     }
 
 
@@ -60,12 +62,54 @@ public class Game {
 //        TODO
 //        print current stage and current letters guessed
         printMan();
-//          printCurrentGuess()
-//          printMistakes()
-//          makeGuess
-//          if(checkEnd()){
+        printCurrentGuess();
+        printMistakes();
+        makeGuess();
+//          if(isEnd()){
 //          askRestart()
 //          }
+    }
+
+    void makeGuess() {
+        Character input = sc.next().charAt(0);
+        if (answerWord.contains(String.valueOf(input))) {
+//            correct guess
+            IntStream.range(0, answerWord.length()).mapToObj(index -> {
+                if (answerWord.charAt(index) == input) {
+                    currentGuess.set(index, input);
+                };
+                return index;
+            }).collect(Collectors.toList());
+
+        } else {
+//          incorrect guess
+            if (mistakes.contains(input)) {
+                System.out.println("You have already tried " + input);
+            } else {
+                mistakes.add(input);
+                stage++;
+            }
+        }
+    }
+
+    void printMistakes() {
+        if (mistakes.isEmpty()) return;
+        System.out.println("Mistakes:");
+        mistakes.stream().map(mistake -> {
+            System.out.print(mistake + " ");
+            return mistake;
+        }).collect(Collectors.toList());
+        System.out.println("");
+    }
+
+    void printCurrentGuess() {
+        System.out.println("Guess:");
+        currentGuess.stream().map(letter -> {
+            System.out.print(letter);
+            return letter;
+        }).collect(Collectors.toList());
+
+        System.out.println("");
     }
 
     void printMan() {

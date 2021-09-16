@@ -37,7 +37,7 @@ public class Game {
         setRandomWord();
         setName();
         initializeCurrentGuess();
-        System.out.println(answerWord);
+//        System.out.println(answerWord);
     }
 
     void setName() {
